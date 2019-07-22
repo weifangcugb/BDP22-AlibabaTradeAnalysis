@@ -1,8 +1,6 @@
 package com.aura.database;
 
 import com.aura.model.ShopInfo;
-import org.apache.ibatis.session.SqlSessionException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
