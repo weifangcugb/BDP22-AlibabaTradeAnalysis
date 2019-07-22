@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common.shopInfo">
+
+    <!--<resultMap id="ResultSet" type="com.aura.model.ShopInfo">
+        &lt;!&ndash;id标签为主键标签，resultMap中必须存在一个id标签&ndash;&gt;
+        <id column="shop_id" jdbcType="INT" property="shopId" javaType="Integer" />
+        &lt;!&ndash;result标签为属性标签，
+        column属性指定表字段名，jdbcType为表字段数据类型
+        property为实体属性名，javaType为实体属性数据类型&ndash;&gt;
+        <result column="city_name" jdbcType="VARCHAR" property="cityName" javaType="String"/>
+        <result column="location_id" jdbcType="INT" property="locationId" javaType="Integer"/>
+        <result column="per_pay" jdbcType="INT" property="perPay" javaType="Integer"/>
+        <result column="score" jdbcType="INT" property="score" javaType="Integer"/>
+        <result column="comment_cnt" jdbcType="INT" property="commentCnt" javaType="Integer"/>
+        <result column="shop_level" jdbcType="INT" property="shopLevel" javaType="Integer"/>
+        <result column="cate_1_name" jdbcType="VARCHAR" property="cate1Name" javaType="String"/>
+        <result column="cate_2_name" jdbcType="VARCHAR" property="cate2Name" javaType="String"/>
+        <result column="cate_3_name" jdbcType="VARCHAR" property="cate3Name" javaType="String"/>
+    </resultMap>-->
+
+    <!-- Spark Streaming shop,city -->
+    <select id="getStreamShopCityList" resultType="ShopInfo">
+        SELECT * FROM shop_info
+    </select>
+
+    <select id="getShopInfoById" resultType="ShopInfo" parameterType="Integer">
+        SELECT DISTINCT * FROM shop_info where shop_id = #{shopId}
+    </select>
+</mapper>
