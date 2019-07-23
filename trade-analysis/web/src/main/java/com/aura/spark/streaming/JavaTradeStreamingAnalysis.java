@@ -86,7 +86,7 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
         );
         input.foreachRDD(rdd -> {
             //1.update MySQL, use c3po thread pool。遇到kafka重复发送消息时，统计结果就会不准确。
-            rdd.foreachPartition(rows -> { //(userId，[shopId,payTime])
+            /*rdd.foreachPartition(rows -> { //(userId，[shopId,payTime])
                 Connection conn = C3P0Utils.getConnection();
                 rows.forEachRemaining(row -> {
                     String shopId = row._2().split(",", -1)[0]; //shopId,payTime
@@ -102,10 +102,11 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
                         e.printStackTrace();
                     }
                 });
-            });
+            });*/
             //2.update hbase table。定时统计结果表数据，同时设置延迟窗口，处理late date。
             rdd.foreachPartition(rows -> {
                 rows.forEachRemaining(row -> {
+                    String userId = row._1();
                     String shopId = row._2().split(",", -1)[0];
                     String payTime = row._2().split(",", -1)[1];
                     Table table = null;
@@ -113,13 +114,13 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
                         createTable(TABLE_INFO);
                         table = getTable(TABLE_INFO);
                         //每个商家实时交易次数，rowkey以1开始
-                        Put merchants = new Put(Bytes.toBytes("1:" + shopId + ":" + payTime));
-                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(QUALIFIER_M), Bytes.toBytes(0));
+                        Put merchants = new Put(Bytes.toBytes(shopId));
+                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(payTime), Bytes.toBytes(userId));
                         table.put(merchants);
                         //每个城市发生的交易次数，rowkey以2开始
                         String cityName = shopCityBroadCast.getValue().getOrDefault(shopId, null);
-                        Put cities = new Put(Bytes.toBytes("2:" + cityName + ":" + payTime));
-                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(QUALIFIER_M), Bytes.toBytes(0));
+                        Put cities = new Put(Bytes.toBytes(cityName));
+                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(payTime), Bytes.toBytes(userId));
                         table.put(cities);
                     } catch (IOException e) {
                         e.printStackTrace();

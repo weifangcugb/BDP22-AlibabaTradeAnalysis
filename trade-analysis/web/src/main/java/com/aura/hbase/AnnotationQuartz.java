@@ -20,18 +20,18 @@ public class AnnotationQuartz extends HBaseBasic {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String TABLE_RESULT = "streaming_result";
-    private static final String QUALIFIER_C= "c";
 
-    //汇总HBase中存储的SparkStreaming实时信息
+    //汇总HBase中存储的SparkStreaming实时信息进MySQL，以便可视化
     @Scheduled(cron = "0 0/10 * * * ?")
     public void HbaseInfoCompact() throws IOException {
         logger.info("scheduled task execute");
 
-        createTable(TABLE_RESULT, QUALIFIER_C);
-        Table info = getTable(JavaTradeStreamingAnalysis.TABLE_INFO);
-        Table result = getTable(TABLE_RESULT);
+        Table infoTable = getTable(JavaTradeStreamingAnalysis.TABLE_INFO);
+        List<Result> shopInfo = getNumRegexRow(infoTable, "1", "2", null,0 );
+        List<Result> cityShop = getNumRegexRow(infoTable, "2", "3", null,0 );
+        for(Result res : shopInfo) {
 
+        }
 
     }
 

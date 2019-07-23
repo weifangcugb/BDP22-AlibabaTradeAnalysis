@@ -29,7 +29,7 @@ public class JavaKafkaProducer
     {
         Properties props = getConfig();
         Producer<String, String> producer = new KafkaProducer(props);
-        String userPayFile = "trade-analysis/web/data/user_pay.txt";
+        String userPayFile = "hdfs://master:9000/bdp22/dataset/user_pay.txt";
         File file = new File(userPayFile);
         BufferedInputStream fis = null;
         BufferedReader reader = null;// 用10M的缓冲读取文本文件
