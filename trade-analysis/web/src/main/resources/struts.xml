@@ -36,5 +36,8 @@
 		
 		<action name="learning_*" class="learningAction" method="{1}">
 		</action>
+
+		<action name="query_*" class="queryAction" method="{1}">
+		</action>
     </package>
 </struts>

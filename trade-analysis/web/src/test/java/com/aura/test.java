@@ -28,13 +28,13 @@ public class test {
         System.out.println(dimensionService.getStreamStartTime());
     }
 
-    /*@Resource
+    @Resource
     private JavaTradeStreamingAnalysis analysis;
 
     @Test
     public void testStreaming() {
         analysis.runAnalysis();
-    }*/
+    }
 
     @Resource
     private HistoryIngest ingest;

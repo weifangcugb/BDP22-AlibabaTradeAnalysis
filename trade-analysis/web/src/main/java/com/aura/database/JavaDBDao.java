@@ -1,9 +1,5 @@
 package com.aura.database;
 
-import com.aura.database.C3P0Utils;
-import com.aura.database.DBHelper;
-import com.aura.database.JDBCUtils;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

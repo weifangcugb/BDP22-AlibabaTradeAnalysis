@@ -26,7 +26,7 @@ public class ShopInfoService extends BasicServiceSupportImpl{
     }
 
     //HBase中用到的根据shop_id查询shop_info信息
-    @Cacheable
+    @Cacheable(value = {"ShopInfo"},key = "shopId") //没生效？？？
     public ShopInfo getShopInfoById(Integer shopId) {
         ShopInfo info = (ShopInfo) shopInfoDao.selectObject("common.shopInfo.getShopInfoById",shopId);
         return info;

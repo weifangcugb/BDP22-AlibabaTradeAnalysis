@@ -3,7 +3,7 @@
 
     <default-config>
         <property name="driverClass">com.mysql.jdbc.Driver</property>
-        <property name="jdbcUrl">jdbc:mysql:///aura</property>
+        <property name="jdbcUrl">jdbc:mysql://master:3306/aura</property>
         <property name="user">root</property>
         <property name="password">root</property>
         <property name="initialPoolSize">5</property>
@@ -12,7 +12,7 @@
 
     <named-config name="itclass">
         <property name="driverClass">com.mysql.jdbc.Driver</property>
-        <property name="jdbcUrl">jdbc:mysql:///aura</property>
+        <property name="jdbcUrl">jdbc:mysql://master:3306/aura</property>
         <property name="user">root</property>
         <property name="password">root</property>
     </named-config>

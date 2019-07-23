@@ -1,5 +1,6 @@
 package com.aura.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -44,7 +45,7 @@ public class MemoryAction extends BasicActionSupportImpl {
 		List<Dimension> list = dimensionService.getMemoryDimensionList(dimension);
 		JsonHelper.printBasicJsonList(getResponse(), list);
 	}
-	
+
 	/**
 	 * Spark Core 稿件排行
 	 */
@@ -53,4 +54,5 @@ public class MemoryAction extends BasicActionSupportImpl {
 		List<Content> list = contentService.getMemoryContentList(content);
 		JsonHelper.printBasicJsonList(getResponse(), list);
 	}
+
 }
