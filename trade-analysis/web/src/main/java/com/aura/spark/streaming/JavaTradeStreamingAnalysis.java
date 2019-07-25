@@ -28,13 +28,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-//@Service("streamingAnalysis")
+@Service("streamingAnalysis")
 public class JavaTradeStreamingAnalysis extends HBaseBasic {
 
     public static final String TABLE_INFO = "streaming_info";
-    private static final String COLUMN_FAMILY = "cf1";
-    private static final String QUALIFIER_M = "m";
-    private static final String QUALIFIER_C= "c";
+    private static final String COLUMN_FAMILY1 = "cf1";
+    private static final String COLUMN_FAMILY2 = "cf2";
 
     private Config config;
     private JavaStreamingContext ssc;
@@ -86,7 +85,7 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
         );
         input.foreachRDD(rdd -> {
             //1.update MySQL, use c3po thread pool。遇到kafka重复发送消息时，统计结果就会不准确。
-            /*rdd.foreachPartition(rows -> { //(userId，[shopId,payTime])
+            rdd.foreachPartition(rows -> { //(userId，[shopId,payTime])
                 Connection conn = C3P0Utils.getConnection();
                 rows.forEachRemaining(row -> {
                     String shopId = row._2().split(",", -1)[0]; //shopId,payTime
@@ -102,7 +101,7 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
                         e.printStackTrace();
                     }
                 });
-            });*/
+            });
             //2.update hbase table。定时统计结果表数据，同时设置延迟窗口，处理late date。
             rdd.foreachPartition(rows -> {
                 rows.forEachRemaining(row -> {
@@ -111,16 +110,16 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
                     String payTime = row._2().split(",", -1)[1];
                     Table table = null;
                     try {
-                        createTable(TABLE_INFO);
+                        createTable(TABLE_INFO,COLUMN_FAMILY1,COLUMN_FAMILY2);
                         table = getTable(TABLE_INFO);
-                        //每个商家实时交易次数，rowkey以1开始
+                        //每个商家实时交易次数
                         Put merchants = new Put(Bytes.toBytes(shopId));
-                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(payTime), Bytes.toBytes(userId));
+                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY1), Bytes.toBytes(payTime), Bytes.toBytes(userId));
                         table.put(merchants);
-                        //每个城市发生的交易次数，rowkey以2开始
+                        //每个城市发生的交易次数
                         String cityName = shopCityBroadCast.getValue().getOrDefault(shopId, null);
                         Put cities = new Put(Bytes.toBytes(cityName));
-                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY), Bytes.toBytes(payTime), Bytes.toBytes(userId));
+                        cities.addColumn(Bytes.toBytes(COLUMN_FAMILY2), Bytes.toBytes(payTime), Bytes.toBytes(userId));
                         table.put(cities);
                     } catch (IOException e) {
                         e.printStackTrace();

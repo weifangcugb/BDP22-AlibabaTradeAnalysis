@@ -1,6 +1,5 @@
 package com.aura.hbase;
 
-import com.aura.model.ShopInfo;
 import com.aura.service.ShopInfoService;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -24,9 +23,6 @@ public class HistoryIngest extends Ingest {
 
     private static final String user_pay = "hdfs://master:9000/bdp22/dataset/user_pay.txt";
     public static final String QUALIFIER_NAME_SHOPID = "shopid";
-    public static final String QUALIFIER_NAME_CITYNAME = "city";
-    public static final String QUALIFIER_NAME_PERPAY = "perpay";
-    public static final String QUALIFIER_NAME_CATE2 = "cate2";
 
     //insert data to hbase
     @Override
@@ -44,7 +40,7 @@ public class HistoryIngest extends Ingest {
             while ((line = in.readLine()) != null) {
 //                System.out.println(line);
                 String[] parts = line.split(",", -1);
-                String rowkey = userIdCompletion(parts[0]) + removeLine(parts[2].substring(0,10));
+                String rowkey = userIdCompletion(parts[0]) + removeLineAndSpace(parts[2].substring(0,13));
                 Put put = new Put(Bytes.toBytes(rowkey));
                 //get shop_info from MySQL
 //                System.out.println(parts[1]);
@@ -82,8 +78,8 @@ public class HistoryIngest extends Ingest {
     }
 
     //时间戳保留年月日，去掉中划线
-    public static String removeLine(String timestamp) {
-        return timestamp.replace("-","");
+    public static String removeLineAndSpace(String timestamp) {
+        return timestamp.replace("-","").replace(" ", "");
     }
 
     //移除左侧零

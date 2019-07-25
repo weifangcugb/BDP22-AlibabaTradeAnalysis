@@ -45,8 +45,8 @@ public class QueryAction extends BasicActionSupportImpl {
 
         Scan scan = new Scan();
         //scan: set startkey and endkey
-        String startKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLine(startTime.replace(".",""));
-        String endKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLine(endTime.replace(".",""));
+        String startKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(startTime.replace(".",""));
+        String endKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(endTime.replace(".",""));
         scan.setStartRow(Bytes.toBytes(startKey)).setStopRow(Bytes.toBytes(endKey));
         scan.setCaching(1000);
 

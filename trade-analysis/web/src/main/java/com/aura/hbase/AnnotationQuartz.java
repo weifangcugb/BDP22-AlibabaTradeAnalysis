@@ -1,6 +1,9 @@
 package com.aura.hbase;
 
+import com.aura.database.C3P0Utils;
+import com.aura.database.JavaDBDao;
 import com.aura.spark.streaming.JavaTradeStreamingAnalysis;
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.slf4j.Logger;
@@ -9,6 +12,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +28,18 @@ public class AnnotationQuartz extends HBaseBasic {
 
     //汇总HBase中存储的SparkStreaming实时信息进MySQL，以便可视化
     @Scheduled(cron = "0 0/10 * * * ?")
-    public void HbaseInfoCompact() throws IOException {
+    public void HbaseInfoCompact() throws IOException, SQLException {
         logger.info("scheduled task execute");
 
+        Connection conn = C3P0Utils.getConnection();
         Table infoTable = getTable(JavaTradeStreamingAnalysis.TABLE_INFO);
-        List<Result> shopInfo = getNumRegexRow(infoTable, "1", "2", null,0 );
-        List<Result> cityShop = getNumRegexRow(infoTable, "2", "3", null,0 );
-        for(Result res : shopInfo) {
-
+        List<Result> info = getNumRegexRow(infoTable, "0", "99999999", ".*",0 );
+        for(Result res : info) {
+            List<Cell> cells = res.listCells();
+            String row = new String(res.getRow(),"utf-8");
+            JavaDBDao.insertOrUpdate(conn,Integer.valueOf(row), cells.size());
+            System.out.println("update success");
         }
-
     }
 
     /**
@@ -83,4 +90,10 @@ public class AnnotationQuartz extends HBaseBasic {
         }
         return list;
     }
+
+    public static void main(String[] args) throws IOException, SQLException {
+        AnnotationQuartz annotationQuartz = new AnnotationQuartz();
+        annotationQuartz.HbaseInfoCompact();
+    }
+
 }
