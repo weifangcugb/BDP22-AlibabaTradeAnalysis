@@ -23,6 +23,7 @@ abstract  public class BaseTradeAnalysis {
         conf.setIfMissing("spark.app.name", getClass().getSimpleName());
         conf.setMaster("local[2]"); //本地测试使用
         spark = SparkSession.builder().config(conf).getOrCreate();
+        spark.sparkContext().setLogLevel("warn");
         jsc = new JavaSparkContext(spark.sparkContext());
     }
 
