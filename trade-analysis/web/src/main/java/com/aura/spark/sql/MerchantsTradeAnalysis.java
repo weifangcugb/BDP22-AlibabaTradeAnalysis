@@ -2,6 +2,7 @@ package com.aura.spark.sql;
 
 import com.aura.model.ShopInfo;
 import com.aura.model.UserPay;
+import com.aura.model.UserView;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.Dataset;
@@ -9,9 +10,11 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.plans.logical.Distinct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Array;
 import scala.Tuple2;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.spark.sql.functions.*;
@@ -31,10 +34,13 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
         userPayJavaRDD.cache();
         Dataset<Row> userPayDF = toUserPayDF(userPayJavaRDD);
         userPayDF.cache();
+        JavaRDD<UserView> userViewJavaRDD = toUserViewRDD("trade-analysis/web/data/user_view.txt");
+        Dataset<Row> userViewDF = toUserViewDF(userViewJavaRDD);
+        userViewDF.cache();
 
         //平均日交易额最大的前10个商家，并输出他们各自的交易额 TextFile -> RDD, Dataframe
         //1.Use Java RDD
-        Map<String, Long> top10TradePerDay = new HashMap<>();
+        /*Map<String, Long> top10TradePerDay = new HashMap<>();
         JavaPairRDD<Long, String> userPayPair = userPayJavaRDD.mapToPair(line -> {
             return new Tuple2<>(line.getShopId(), line.getPayTime());
         });
@@ -53,7 +59,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                 " on aa.shopId = bb.shopId order by CAST(bb.totalPay*1.0/aa.totalTimes AS decimal(10,2)) desc limit 10";
 
         Dataset<Row> top10TradePerDayRow = spark.sql(sql);
-//        top10TradePerDayRow.show();
+        top10TradePerDayRow.show(10);
 
         //2-2.Use Dataframe
         Dataset<Row> joinDf = userPayDF.join(shopInfoDF, "shopId").select(col("shopId"), col("perPay"),
@@ -68,19 +74,32 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                 .join(shopInfoDF, "shopId").withColumn("totalPay", col("shopPayCount").multiply(col("perPay")))
                 .orderBy(col("totalPay").desc());
         consumeDF.show(10);
-
+        long high = consumeDF.select("totalPay").first().getLong(0);
         Dataset<Row> top5PopularMilkTea = consumeDF.filter("cate3Name = '奶茶'")
                 .filter("cityName = '北京' or cityName = '上海' or cityName = '广州' or cityName = '深圳'")
-                .withColumn("totalScore", col("perPay").divide(5).multiply(0.7).plus(col("totalPay").multiply(0.3).divide(4197347)))
+                .withColumn("totalScore", col("perPay").divide(5).multiply(0.7).plus(col("totalPay").multiply(0.3).divide(high)))
                 .orderBy(col("totalScore").desc());
         top5PopularMilkTea.show(10);
         Dataset<Row> top5PopularFastFood = consumeDF.filter("cate3Name = '中式快餐'")
                 .filter("cityName = '北京' or cityName = '上海' or cityName = '广州' or cityName = '深圳'")
-                .withColumn("totalScore", col("perPay").divide(5).multiply(0.7).plus(col("totalPay").multiply(0.3).divide(4197347)))
+                .withColumn("totalScore", col("perPay").divide(5).multiply(0.7).plus(col("totalPay").multiply(0.3).divide(high)))
                 .orderBy(col("totalScore").desc());
-        top5PopularFastFood.show(10);
+        top5PopularFastFood.show(10);*/
+
+        System.out.println("----------------3----------------");
+        //对于平均日交易额最大的前3个商家进行漏斗分析，以浏览行为作为分析目标，输出2016.10.01~2016.10.31共31天的留存率
+        Dataset<Row> viewDF = userViewDF.withColumn("viewDate", col("viewTime").substr(0, 10))
+          //      .filter(String.format("viewDate between %s and %s", "2016-10-01", "2016-10-31"))
+        .select("userId","shopId","viewDate");
+        viewDF.show(10);
+        viewDF.createOrReplaceTempView("user_view");
+
+
     }
 
+    private List<Array[]> remainRate() {
+        return null;
+    }
     //Main For Test
     public static void main(String[] args) {
         MerchantsTradeAnalysis merchantsTradeAnalysis = new MerchantsTradeAnalysis();
