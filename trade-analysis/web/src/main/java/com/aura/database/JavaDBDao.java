@@ -15,6 +15,12 @@ public class JavaDBDao {
     private static String saveCityTradeSql =
             "insert into city_trade values(?,?,now()) ON DUPLICATE KEY UPDATE trade_count = trade_count + 1, update_time = now()";
 
+    private static String saveTradeAccountSql =
+            "insert into trade_acount values(?,?,now())";
+
+    private static String savePopulShopSql =
+            "insert into popul_shop values(?,?,?,now())";
+
     private static String getShopInfo = "select * from merchant_trade where shop_id = ?";
 
     private static String insertShopTrade = "insert into merchant_trade values(?,?,now())";
@@ -56,6 +62,14 @@ public class JavaDBDao {
 
     public static void saveCityTrade(Connection conn, String cityName, int tradeCount) throws SQLException {
         execute(conn, saveCityTradeSql, cityName, tradeCount);
+    }
+
+    public static void saveTradeAccount(Connection conn, int shopId, int tradeCount) throws SQLException {
+        execute(conn, saveTradeAccountSql, shopId, tradeCount);
+    }
+
+    public static void savePopulShop(Connection conn, int shopId, String  cate, double grade) throws SQLException {
+        execute(conn, savePopulShopSql,shopId, cate, grade);
     }
 
     public static void insertOrUpdate(Connection conn, int shopId, int tradeCount) throws SQLException {

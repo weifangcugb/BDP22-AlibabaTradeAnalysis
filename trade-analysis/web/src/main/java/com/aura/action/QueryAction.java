@@ -5,6 +5,8 @@ import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
 import com.aura.model.ShopInfo;
+import com.aura.model.result.PopulShop;
+import com.aura.model.result.TradeAcount;
 import com.aura.service.ShopInfoService;
 import com.aura.util.JsonHelper;
 import org.apache.hadoop.hbase.KeyValue;
@@ -70,6 +72,37 @@ public class QueryAction extends BasicActionSupportImpl {
             resList.add(jsonObject);
         });
         JsonHelper.printBasicJsonList(getResponse(), resList);
+    }
+
+    /**
+     * 查询平均日交易额最大的前10个商家
+     */
+    public void getTradeAccount() {
+        List<TradeAcount> list = service.getTradeAcountList();
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     * 查询北京、上海、广州和深圳四个城市最受欢迎的5家奶茶商店和中式快餐编号
+     */
+    public void getPopulShop() {
+        String cate = this.getRequest().getParameter("cate");
+        List<PopulShop> list = service.getPopulShopList(cate);
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     * 实时展示每个商家交易次数
+     */
+    public void getMerchantTrade() {
+
+    }
+
+    /**
+     *  实时展示每个城市发生的交易次数
+     */
+    public void getCityTrade() {
+
     }
 
 }

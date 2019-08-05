@@ -1,5 +1,7 @@
 package com.aura.spark.sql;
 
+import com.aura.database.C3P0Utils;
+import com.aura.database.JavaDBDao;
 import com.aura.model.ShopInfo;
 import com.aura.model.UserPay;
 import com.aura.model.UserView;
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import scala.Array;
 import scala.Tuple2;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +44,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
 
         //平均日交易额最大的前10个商家，并输出他们各自的交易额 TextFile -> RDD, Dataframe
         //1.Use Java RDD
-        /*Map<String, Long> top10TradePerDay = new HashMap<>();
+        Map<String, Long> top10TradePerDay = new HashMap<>();
         JavaPairRDD<Long, String> userPayPair = userPayJavaRDD.mapToPair(line -> {
             return new Tuple2<>(line.getShopId(), line.getPayTime());
         });
@@ -60,6 +64,18 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
 
         Dataset<Row> top10TradePerDayRow = spark.sql(sql);
         top10TradePerDayRow.show(10);
+
+        top10TradePerDayRow.foreachPartition(rows -> {
+            Connection connection = C3P0Utils.getConnection();
+            rows.forEachRemaining(row -> {
+                try {
+                    JavaDBDao.saveTradeAccount(connection, row.getInt(0), row.getInt(1));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
 
         //2-2.Use Dataframe
         Dataset<Row> joinDf = userPayDF.join(shopInfoDF, "shopId").select(col("shopId"), col("perPay"),
@@ -84,7 +100,29 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                 .filter("cityName = '北京' or cityName = '上海' or cityName = '广州' or cityName = '深圳'")
                 .withColumn("totalScore", col("perPay").divide(5).multiply(0.7).plus(col("totalPay").multiply(0.3).divide(high)))
                 .orderBy(col("totalScore").desc());
-        top5PopularFastFood.show(10);*/
+        top5PopularFastFood.show(10);
+
+        top5PopularMilkTea.foreachPartition(rows -> {
+            Connection connection = C3P0Utils.getConnection();
+            rows.forEachRemaining(row -> {
+                try {
+                    JavaDBDao.savePopulShop(connection, row.getInt(0),"奶茶", row.getInt(1));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        top5PopularFastFood.foreachPartition(rows -> {
+            Connection connection = C3P0Utils.getConnection();
+            rows.forEachRemaining(row -> {
+                try {
+                    JavaDBDao.savePopulShop(connection, row.getInt(0),"中式快餐", row.getInt(1));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
 
         System.out.println("----------------3----------------");
         //对于平均日交易额最大的前3个商家进行漏斗分析，以浏览行为作为分析目标，输出2016.10.01~2016.10.31共31天的留存率

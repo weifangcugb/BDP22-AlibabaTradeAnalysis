@@ -58,6 +58,25 @@
                 </div>
             </div>
         </div>
+        <div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label style="margin-left: -26px;text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
+                    <div class="col-xs-4" style="float:right;width: 50%;">
+                        <input type="text" class="input-sm form-control" id="viewuserid" placeholder="请输入" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label style="margin-left: -26px;text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
+                    <div class="col-xs-4" style="float:right;width: 50%;">
+                        <input type="text" class="input-sm form-control" id="viewshopid" placeholder="请输入" required>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn btn-primary col-xs-4" id="view_btn">购买</div>
+                </div>
+            </div>
+        </div>
         <div class="panel" style="padding: 20px 0px;">
             <div class="section-data" style="padding: 0px 5px;">
                 <table data-row-style="rowStyle"

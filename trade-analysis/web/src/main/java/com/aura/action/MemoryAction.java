@@ -55,4 +55,11 @@ public class MemoryAction extends BasicActionSupportImpl {
 		JsonHelper.printBasicJsonList(getResponse(), list);
 	}
 
+	/**
+	 * 平均日交易额最大的前10个商家，并输出他们各自的交易额
+	 */
+	public void getTradeAccount() {
+
+	}
+
 }

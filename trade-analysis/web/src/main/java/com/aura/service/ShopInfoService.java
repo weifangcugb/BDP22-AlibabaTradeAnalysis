@@ -3,6 +3,8 @@ package com.aura.service;
 import com.aura.basic.BasicServiceSupportImpl;
 import com.aura.dao.ShopInfoDao;
 import com.aura.model.ShopInfo;
+import com.aura.model.result.PopulShop;
+import com.aura.model.result.TradeAcount;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -31,4 +33,15 @@ public class ShopInfoService extends BasicServiceSupportImpl{
         ShopInfo info = (ShopInfo) shopInfoDao.selectObject("common.shopInfo.getShopInfoById",shopId);
         return info;
     }
+
+    public List<TradeAcount> getTradeAcountList() {
+        List<TradeAcount> list = (List<TradeAcount>)shopInfoDao.selectList("common.shopInfo.getTradeAcount", null);
+        return list;
+    }
+
+    public List<PopulShop> getPopulShopList(String cate) {
+        List<PopulShop> list = (List<PopulShop>)shopInfoDao.selectList("common.shopInfo.getPopulShopList", cate);
+        return list;
+    }
+
 }

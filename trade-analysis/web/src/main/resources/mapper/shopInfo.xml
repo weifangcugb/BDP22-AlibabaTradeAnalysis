@@ -28,4 +28,13 @@
     <select id="getShopInfoById" resultType="ShopInfo" parameterType="Integer">
         SELECT DISTINCT * FROM shop_info where shop_id = #{shopId}
     </select>
+
+    <select id="getTradeAcount" resultType="TradeAccount">
+        SELECT * FROM trade_acount order by trade_count desc
+    </select>
+
+    <select id="getPopulShopList" resultType="PopulShop" parameterType="String">
+        SELECT * FROM popul_shop WHERE cate = #{cate} order by grade desc
+    </select>
+
 </mapper>
