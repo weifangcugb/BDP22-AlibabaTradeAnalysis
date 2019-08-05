@@ -77,9 +77,9 @@ abstract  public class BaseTradeAnalysis {
         JavaRDD<UserView> userViewJavaRDD = rdd.map(line -> {
             String[] parts = line.split(",",-1);
             UserView bean = new UserView();
-            bean.setUserId(Long.parseLong(parts[0]));
-            bean.setShopId(Long.parseLong(parts[1]));
-            bean.setViewTime(parts[2]);
+            bean.setUser_id(parts[0]);
+            bean.setShop_id((parts[1]));
+            bean.setTime_stamp(parts[2]);
             return bean;
         });
         return userViewJavaRDD;
