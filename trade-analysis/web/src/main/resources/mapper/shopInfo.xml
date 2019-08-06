@@ -29,12 +29,12 @@
         SELECT DISTINCT * FROM shop_info where shop_id = #{shopId}
     </select>
 
-    <select id="getTradeAcount" resultType="TradeAccount">
-        SELECT * FROM trade_acount order by trade_count desc
+    <select id="getTradeAcount" resultType="com.aura.model.TradeAcount">
+        SELECT * FROM trade_acount order by trade_count asc
     </select>
 
-    <select id="getPopulShopList" resultType="PopulShop" parameterType="String">
-        SELECT * FROM popul_shop WHERE cate = #{cate} order by grade desc
+    <select id="getPopulShopList" resultType="com.aura.model.PopulShop" parameterType="String">
+        SELECT * FROM popul_shop WHERE cate = #{cate} order by grade asc
     </select>
 
 </mapper>

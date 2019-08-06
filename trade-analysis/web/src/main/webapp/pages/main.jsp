@@ -141,8 +141,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		</a>
   	</div>
   	<div class="content marginTop">
-  		<a href="pages/learning/learning.jsp" target="_blank">
-  			<img src="pages/images/learning.png" width="250px" height="180px" title="机器学习-Spark MlLib" />
+  		<a href="pages/memory/statistical.jsp" target="_blank">
+  			<img src="pages/images/learning.png" width="250px" height="180px" title="任务四-数据统计" />
   		</a>
   	</div>
 	<div class="content marginTop">

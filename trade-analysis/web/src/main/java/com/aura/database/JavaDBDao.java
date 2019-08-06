@@ -21,11 +21,13 @@ public class JavaDBDao {
     private static String savePopulShopSql =
             "insert into popul_shop values(?,?,?,now())";
 
-    private static String getShopInfo = "select * from merchant_trade where shop_id = ?";
-
     private static String insertShopTrade = "insert into merchant_trade values(?,?,now())";
 
-    private static String updateShopTrade = "update merchant_trade set trade_count = ? and update_time = now() where shop_id = ?";
+    private static String deleteShopTrade = "delete from merchant_trade where shop_id = ?";
+
+    private static String insertCityTrade = "insert into city_trade(city_name,trade_count,update_time) values(?,?,now())";
+
+    private static String deleteCityTrade = "delete from city_trade where city_name = ?";
 
     private static void execute(Connection conn, String sql, Object... params) throws SQLException {
         PreparedStatement pstm = null;
@@ -72,13 +74,14 @@ public class JavaDBDao {
         execute(conn, savePopulShopSql,shopId, cate, grade);
     }
 
-    public static void insertOrUpdate(Connection conn, int shopId, int tradeCount) throws SQLException {
-        ResultSet sets = executeQuery(conn, getShopInfo, shopId);
-        if(!sets.last()) {
-            execute(conn,insertShopTrade,shopId,tradeCount);
-        }else {
-            execute(conn,updateShopTrade, tradeCount, shopId);
-        }
+    public static void insertOrUpdateM(Connection conn, int shopId, int tradeCount) throws SQLException {
+        execute(conn, deleteShopTrade, shopId);
+        execute(conn,insertShopTrade,shopId,tradeCount);
+    }
+
+    public static void insertOrUpdateC(Connection conn, String cityName, int tradeCount) throws SQLException {
+        execute(conn, deleteCityTrade, cityName);
+        execute(conn,insertCityTrade,cityName,tradeCount);
     }
 
     public static Map<String,String> getShopCityMap() {

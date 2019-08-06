@@ -27,18 +27,27 @@ public class AnnotationQuartz extends HBaseBasic {
 
 
     //汇总HBase中存储的SparkStreaming实时信息进MySQL，以便可视化
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void HbaseInfoCompact() throws IOException, SQLException {
         logger.info("scheduled task execute");
 
         Connection conn = C3P0Utils.getConnection();
         Table infoTable = getTable(JavaTradeStreamingAnalysis.TABLE_INFO);
-        List<Result> info = getNumRegexRow(infoTable, "0", "99999999", ".*",0 );
-        for(Result res : info) {
+        //汇总商家交易信息
+        List<Result> mInfo = getNumRegexRow(infoTable, "0", "99999999", ".*",0 );
+        for(Result res : mInfo) {
             List<Cell> cells = res.listCells();
             String row = new String(res.getRow(),"utf-8");
-            JavaDBDao.insertOrUpdate(conn,Integer.valueOf(row), cells.size());
-            System.out.println("update success");
+            JavaDBDao.insertOrUpdateM(conn,Integer.valueOf(row), cells.size());
+            System.out.println("update merchant trade info success");
+        }
+        //汇总城市交易信息
+        List<Result> cInfo = getNumRegexRow(infoTable, "a", null, ".*",0 );
+        for(Result res : cInfo) {
+            List<Cell> cells = res.listCells();
+            String row = new String(res.getRow(),"utf-8");
+            JavaDBDao.insertOrUpdateC(conn,row, cells.size());
+            System.out.println("update city trade info success");
         }
     }
 
@@ -68,8 +77,12 @@ public class AnnotationQuartz extends HBaseBasic {
             fl.addFilter(rf);
             Scan scan = new Scan();
             //设置取值范围
-            scan.setStartRow(startRowKey.getBytes());//开始的key
-            scan.setStopRow(endRowKey.getBytes());//结束的key
+            if(startRowKey != null) {
+                scan.setStartRow(startRowKey.getBytes());//开始的key
+            }
+            if(endRowKey != null) {
+                scan.setStopRow(endRowKey.getBytes());//结束的key
+            }
             scan.setFilter(fl);//为查询设置过滤器的list
             ResultScanner scanner = table.getScanner(scan) ;
             list = new ArrayList<Result>() ;

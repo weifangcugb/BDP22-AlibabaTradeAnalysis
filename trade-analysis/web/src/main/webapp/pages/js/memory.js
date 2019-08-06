@@ -527,3 +527,230 @@ function getOptionContent(title, titles, uvs) {
 	};
 	return option;
 }
+
+/**
+ * 日交易额商家排行
+ */
+function getOptionContent0(title, titles, uvs) {
+    var option = {
+        title: {
+            text: title,
+            textStyle: {
+                color: '#ffffff'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            textStyle: {
+                color: '#ffffff'
+            },
+            data: []
+        },
+        grid: {
+            top: 30,
+            left: 5,
+            right: 20,
+            bottom: 5,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            splitLine: {show: false},
+            axisLine: {lineStyle: {color: '#ffffff'}},
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            splitLine: {show: false},
+            axisLine: {show: false, lineStyle: {color: '#ddd'}},
+            axisTick: {show: false, lineStyle: {color: '#ddd'}},
+            axisLabel: {inside: true,interval: 0, textStyle: {fontSize: 15,color: '#ffffff'}},
+            zlevel: 3,
+            data: titles
+        },
+        series: [
+            {
+                name: '交易额',
+                type: 'bar',
+                itemStyle: {
+                    normal: {
+                        color: function(params) {
+                            var colorList = [
+                                '#C1232B','#FCCE10','#27727B','#F4E001',
+                                '#D7504B','#C6E579','#E87C25','#F0805A','#26C0C0','#B5C334',
+                            ];
+                            if(params.dataIndex < 0) {
+                                return colorList[0];
+                            }
+                            var index = params.dataIndex % colorList.length;
+                            var dataSize = uvs.length;
+                            if(dataSize > colorList.length) {
+                                dataSize = colorList.length;
+                            }
+                            index = dataSize - index - 1;
+                            return colorList[index];
+                        }
+                    }
+                },
+                data: uvs
+            }
+        ]
+    };
+    return option;
+}
+
+
+/**
+ * 奶茶排行
+ */
+function getOptionContent1(title, titles, uvs) {
+    var option = {
+        title: {
+            text: title,
+            textStyle: {
+                color: '#ffffff'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            textStyle: {
+                color: '#ffffff'
+            },
+            data: []
+        },
+        grid: {
+            top: 30,
+            left: 5,
+            right: 20,
+            bottom: 5,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            splitLine: {show: false},
+            axisLine: {lineStyle: {color: '#ffffff'}},
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            splitLine: {show: false},
+            axisLine: {show: false, lineStyle: {color: '#ddd'}},
+            axisTick: {show: false, lineStyle: {color: '#ddd'}},
+            axisLabel: {inside: true,interval: 0, textStyle: {fontSize: 15,color: '#ffffff'}},
+            zlevel: 3,
+            data: titles
+        },
+        series: [
+            {
+                name: '评分',
+                type: 'bar',
+                itemStyle: {
+                    normal: {
+                        color: function(params) {
+                            var colorList = [
+                                '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B'
+                            ];
+                            if(params.dataIndex < 0) {
+                                return colorList[0];
+                            }
+                            var index = params.dataIndex % colorList.length;
+                            var dataSize = uvs.length;
+                            if(dataSize > colorList.length) {
+                                dataSize = colorList.length;
+                            }
+                            index = dataSize - index - 1;
+                            return colorList[index];
+                        }
+                    }
+                },
+                data: uvs
+            }
+        ]
+    };
+    return option;
+}
+
+/**
+ * 中式快餐排行
+ */
+function getOptionContent2(title, titles, uvs) {
+    var option = {
+        title: {
+            text: title,
+            textStyle: {
+                color: '#ffffff'
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            textStyle: {
+                color: '#ffffff'
+            },
+            data: []
+        },
+        grid: {
+            top: 30,
+            left: 5,
+            right: 20,
+            bottom: 5,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            splitLine: {show: false},
+            axisLine: {lineStyle: {color: '#ffffff'}},
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            splitLine: {show: false},
+            axisLine: {show: false, lineStyle: {color: '#ddd'}},
+            axisTick: {show: false, lineStyle: {color: '#ddd'}},
+            axisLabel: {inside: true,interval: 0, textStyle: {fontSize: 15,color: '#ffffff'}},
+            zlevel: 3,
+            data: titles
+        },
+        series: [
+            {
+                name: '评分',
+                type: 'bar',
+                itemStyle: {
+                    normal: {
+                        color: function(params) {
+                            var colorList = [
+                                '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD'
+                            ];
+                            if(params.dataIndex < 0) {
+                                return colorList[0];
+                            }
+                            var index = params.dataIndex % colorList.length;
+                            var dataSize = uvs.length;
+                            if(dataSize > colorList.length) {
+                                dataSize = colorList.length;
+                            }
+                            index = dataSize - index - 1;
+                            return colorList[index];
+                        }
+                    }
+                },
+                data: uvs
+            }
+        ]
+    };
+    return option;
+}

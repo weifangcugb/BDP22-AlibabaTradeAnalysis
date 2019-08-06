@@ -1,7 +1,10 @@
-package com.aura.model.result;
+package com.aura.model;
 
 import java.util.Date;
 
+/**
+ * 热门商家信息
+ */
 public class PopulShop {
     private Integer shopId;
     private String cate;

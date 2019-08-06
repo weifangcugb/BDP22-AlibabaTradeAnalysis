@@ -27,7 +27,7 @@
     <style type="text/css">
         #main {
             width: 100%;
-            height: 584px;
+            height: 100%;
         }
 
         body {
@@ -52,60 +52,63 @@
 </head>
 
 <body>
-<div id="chartContent1" style="width: 33%;float: right;margin-top:10px;" class="chart marginRight"></div>
-<div id="chartContent2" style="width: 33%;float: right;margin-top:10px;" class="chart marginRight"></div>
-
+<div id="chartContent0" style="width: 30%;float: left;margin-top:100px;margin-left: 100px" class="chart"></div>
+<div id="chartContent1" style="width: 30%;float: left;margin-top:100px;" class="chart"></div>
+<div id="chartContent2" style="width: 30%;float: left;margin-top:100px;" class="chart marginRight"></div>
 <script type="text/javascript">
     var height = $(window).height() / 2 - 15;
-    $("#chartContent").height(height);
+    $("#chartContent0").height(height);
+    $("#chartContent1").height(height);
+    $("#chartContent2").height(height);
 
+    var chartContent0 = echarts.init(document.getElementById('chartContent0'));
     var chartContent1 = echarts.init(document.getElementById('chartContent1'));
     var chartContent2 = echarts.init(document.getElementById('chartContent2'));
 
     function ajaxQuery() {
 
         /**
-         * 最受欢迎排行
+         * 平均日交易额最大商家排行
+         */
+        $.get({url: "common/query_getTradeAccount"}).done(function (data) {
+            var shops = [];
+            var trades = [];
+            data.map(function (item) {
+                shops.push(item.shopId + " : " + item.tradeCount);
+                trades.push(item.tradeCount);
+            });
+            var option = getOptionContent0("平均日交易额最大商家排行", shops, trades);
+            chartContent0.setOption(option);
+        });
+
+        /**
+         * 最受欢迎奶茶排行
          */
         $.get({url: "common/query_getPopulShop?cate=奶茶"}).done(function (data) {
-            data = data.sort(function (a, b) {
-                return a.uv - b.uv;
-            })
-            var titles = [];
-            var uvs = [];
+            var shops = [];
+            var grades = [];
             data.map(function (item) {
-                titles.push(subTitle(item.title, 22) + " : " + item.uv);
-                uvs.push(item.uv);
-            })
-            var option = getOptionContent("最受欢迎奶茶商店排行", titles, uvs);
+                shops.push(item.shopId + " : " + item.grade);
+                grades.push(item.grade);
+            });
+            var option = getOptionContent1("最受欢迎奶茶商店排行", shops, grades);
             chartContent1.setOption(option);
         });
 
         /**
-         * 最受欢迎排行
+         * 最受欢迎中式排行
          */
         $.get({url: "common/query_getPopulShop?cate=中式快餐"}).done(function (data) {
-            data = data.sort(function (a, b) {
-                return a.uv - b.uv;
-            })
-            var titles = [];
-            var uvs = [];
+            var shops = [];
+            var grades = [];
             data.map(function (item) {
-                titles.push(subTitle(item.title, 22) + " : " + item.uv);
-                uvs.push(item.uv);
-            })
-            var option = getOptionContent("最受欢迎中式快餐排行", titles, uvs);
+                shops.push(item.shopId + " : " + item.grade);
+                grades.push(item.grade);
+            });
+            var option = getOptionContent2("最受欢迎中式快餐排行", shops, grades);
             chartContent2.setOption(option);
         });
     }
-
-    function subTitle(title, length) {
-        if (title.length > length) {
-            return title.substring(0, length) + "...";
-        }
-        return title;
-    }
-
     ajaxQuery();
 </script>
 </body>

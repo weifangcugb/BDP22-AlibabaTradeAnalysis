@@ -29,7 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	}
 	body {
 		margin: 0 0 0 0;
-		background-image: url('pages/images/3.jpg');
+		background-image: url('pages/images/4.jpg');
 		background-attachment:fixed;
 		background-repeat:no-repeat;
 		background-size:cover;
@@ -92,7 +92,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		{name: "香港", 'color': colorCoord[7],'latitude': 22.25, 'longitude': 114.05, 'position': 'right'},
 		{name: "澳门", 'color': colorCoord[7],'latitude': 22.12, 'longitude': 113.32, 'position': 'left'}
 	];
-	
+
+    //根据城市名称获取位置信息
 	var getCoordMapItem = function(name) {
     	var result = undefined;
     	geoCoordMap.forEach(function (item) {

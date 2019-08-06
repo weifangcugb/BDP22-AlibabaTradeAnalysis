@@ -1,5 +1,6 @@
 package com.aura;
 
+import com.aura.action.QueryAction;
 import com.aura.hbase.HistoryIngest;
 import com.aura.service.DimensionService;
 import com.aura.spark.streaming.JavaTradeStreamingAnalysis;
@@ -44,5 +45,18 @@ public class test {
         System.out.println("hbase");
         ingest.ingest();
     }
+
+    @Resource
+    QueryAction  action;
+    @Test
+    public void testQueryAction() {
+        action.getTradeAccount();
+        action.getPopulShop();
+        action.getTradeAccount();
+    }
+
+
+
+
 
 }

@@ -1,7 +1,10 @@
-package com.aura.model.result;
+package com.aura.model;
 
 import java.util.Date;
 
+/**
+ * 商家日平均交易额信息
+ */
 public class TradeAcount {
     private Integer shopId;
     private Integer tradeCount;

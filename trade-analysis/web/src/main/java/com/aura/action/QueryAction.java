@@ -5,8 +5,8 @@ import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
 import com.aura.model.ShopInfo;
-import com.aura.model.result.PopulShop;
-import com.aura.model.result.TradeAcount;
+import com.aura.model.PopulShop;
+import com.aura.model.TradeAcount;
 import com.aura.service.ShopInfoService;
 import com.aura.util.JsonHelper;
 import org.apache.hadoop.hbase.KeyValue;
@@ -92,14 +92,14 @@ public class QueryAction extends BasicActionSupportImpl {
     }
 
     /**
-     * 实时展示每个商家交易次数
+     * 实时统计每个商家交易次数
      */
     public void getMerchantTrade() {
 
     }
 
     /**
-     *  实时展示每个城市发生的交易次数
+     *  实时统计每个城市发生的交易次数
      */
     public void getCityTrade() {
 
