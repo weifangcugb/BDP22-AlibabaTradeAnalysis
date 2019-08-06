@@ -41,11 +41,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    <div id="main"></div>
+    <div id="head" style="width: 60%;float: left;margin-left: 20%;margin-top: 10px" class="chart"></div>
+    <div id="main" style="width: 62%;float: left; margin-left: 27%;margin-top: -20px"></div>
     
     <script type="text/javascript">
-    $("#main").height($(window).height());
+    $("#main").height($(window).height()/3*2);
+    $("#head").height($(window).height()/3);
     var myChart = echarts.init(document.getElementById('main'));
+
+    var myChartHead = echarts.init(document.getElementById('head'));
     
     var colorCoord = ['#eea638','#de4c4f','#3398DB','#86a965','#a7a737','#8aabb0','#d8854f','#ddb926']
     
@@ -134,12 +138,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	var option = {
 	    // backgroundColor: '#404a59',
 	    title: {
-            text: '访客地区分布',
-            subtext: '访问热度',
+            text: '城市实时交易次数',
+            subtext: '',
             left: 'center',
             top: 'top',
             textStyle: {
-                color: '#fff'
+                color: '#3B6C88'
             }
         },
         tooltip : {
@@ -161,7 +165,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        }
 	    },
 	    geo: {
-	        name: '访客地区分布',
+	        name: '地区交易量',
 	        map: 'china',
 	        left: 0,
 	        right: '32%',
@@ -230,8 +234,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        }
 	    ]
 	};
-	
-	var interval = 1;
+
+
+
+    var interval = 10;
     var time = 0;
 
 	function fetchStreamingStartTime() {
@@ -247,10 +253,126 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    });
 	}
 
-	fetchStreamingStartTime();
-	
+	//fetchStreamingStartTime();
+    function shopRankList() {
+
+	    var shop = [];
+	    var trade = [];
+
+        var getUrl = "common/query_getMerchantTrade";
+        $.ajax({
+            async:false,
+            url:getUrl,
+            type:"get",
+            dataType:"json",
+            success:function(data) {
+                data.map(function (item) {
+                    shop.push(item.shopId);
+                    trade.push(item.tradeCount);
+                });
+            }
+        });
+
+        var option_head = {
+            title: {
+                x: 'center',
+                text: '商家实时交易次数(TOP10)',
+                subtext: '',
+                textStyle: {
+                    color: '#3B6C88'
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            calculable: true,
+            grid: {
+                borderWidth: 0,
+                y: 80,
+                y2: 60
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    show: false,
+                    data: shop
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    show: false
+                }
+            ],
+            series: [
+                {
+                    name: '交易量',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: function(params) {
+                                // build a color map as your need.
+                                var colorList = [
+                                    '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                                    '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                                    '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                                ];
+                                return colorList[params.dataIndex]
+                            },
+                            label: {
+                                show: true,
+                                position: 'top',
+                                formatter: '{b}\n{c}'
+                            }
+                        }
+                    },
+                    data: trade,
+                    markPoint: {
+                        tooltip: {
+                            trigger: 'item',
+                            backgroundColor: 'rgba(0,0,0,0)',
+                            formatter: function(params){
+                                return '<img src="'
+                                    + params.data.symbol.replace('image://', '')
+                                    + '"/>';
+                            }
+                        },
+                        data: [
+                            {xAxis:0, y: 350, name:'Line', symbolSize:20, symbol: 'image://../asset/ico/折线图.png'},
+                            {xAxis:1, y: 350, name:'Bar', symbolSize:20, symbol: 'image://../asset/ico/柱状图.png'},
+                            {xAxis:2, y: 350, name:'Scatter', symbolSize:20, symbol: 'image://../asset/ico/散点图.png'},
+                            {xAxis:3, y: 350, name:'K', symbolSize:20, symbol: 'image://../asset/ico/K线图.png'},
+                            {xAxis:4, y: 350, name:'Pie', symbolSize:20, symbol: 'image://../asset/ico/饼状图.png'},
+                            {xAxis:5, y: 350, name:'Radar', symbolSize:20, symbol: 'image://../asset/ico/雷达图.png'},
+                            {xAxis:6, y: 350, name:'Chord', symbolSize:20, symbol: 'image://../asset/ico/和弦图.png'},
+                            {xAxis:7, y: 350, name:'Force', symbolSize:20, symbol: 'image://../asset/ico/力导向图.png'},
+                            {xAxis:8, y: 350, name:'Map', symbolSize:20, symbol: 'image://../asset/ico/地图.png'},
+                            {xAxis:9, y: 350, name:'Gauge', symbolSize:20, symbol: 'image://../asset/ico/仪表盘.png'},
+                            {xAxis:10, y: 350, name:'Funnel', symbolSize:20, symbol: 'image://../asset/ico/漏斗图.png'},
+                        ]
+                    }
+                }
+            ]
+        };
+
+        myChartHead.setOption(option_head);
+    }
+
+    shopRankList();
+	//定时刷新 定位毫秒
+    setInterval(shopRankList, interval * 1000);
+
+
 	function ajaxQuery() {
-		var getUrl = "common/stream_getProvinceList?time=" + time;
+		var getUrl = "common/query_?time=" + time;
 		time++;
 		
 	    $.get({url:getUrl}).done(function(data) {
@@ -337,11 +459,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 	}
 	
-	ajaxQuery();
-	setInterval(ajaxQuery, interval * 1000);
+	//ajaxQuery();
+    //定时任务 刷新地图
+	//setInterval(ajaxQuery, interval * 1000);
     
 	myChart.setOption(option);
-	
+
 	myChart.on('click', function (params) {
 		var seriesType = params.seriesType;
 		if(seriesType == 'bar') {

@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
-import com.aura.model.ShopInfo;
-import com.aura.model.PopulShop;
-import com.aura.model.TradeAcount;
+import com.aura.model.*;
 import com.aura.service.ShopInfoService;
 import com.aura.util.JsonHelper;
 import org.apache.hadoop.hbase.KeyValue;
@@ -95,14 +93,24 @@ public class QueryAction extends BasicActionSupportImpl {
      * 实时统计每个商家交易次数
      */
     public void getMerchantTrade() {
-
+        List<MerchantTrade> list = service.getMerchantTradeList();
+        JsonHelper.printBasicJsonList(getResponse(), list);
     }
 
     /**
      *  实时统计每个城市发生的交易次数
      */
     public void getCityTrade() {
+        List<CityTrade> list = service.getCityTradeList();
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
 
+    /**
+     *  实时统计每个省份发生的交易次数
+     */
+    public void getProvinceTrade() {
+        List<CityTrade> list = service.getCityTradeList();
+        JsonHelper.printBasicJsonList(getResponse(), list);
     }
 
 }

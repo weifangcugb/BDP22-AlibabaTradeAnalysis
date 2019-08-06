@@ -37,4 +37,12 @@
         SELECT * FROM popul_shop WHERE cate = #{cate} order by grade asc
     </select>
 
+    <select id="getMerchantTrade" resultType="com.aura.model.MerchantTrade">
+        select * from (SELECT * FROM merchant_trade order by trade_count desc limit 10) r order by r.update_time desc
+    </select>
+
+    <select id="getCityTradeList" resultType="com.aura.model.CityTrade">
+        SELECT * FROM city_trade
+    </select>
+
 </mapper>
