@@ -7,6 +7,19 @@ public class CityTrade {
     private String cityName;
     private Integer tradeCount;
     private String updateTime;
+    private Integer cityId;
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
 
     public String getCityName() {
         return cityName;

@@ -25,27 +25,40 @@
     <script type="text/javascript" src="pages/js/search.js"></script>
     <script type="text/javascript" src="pages/js/bootstrap-table-zh-CN.js"></script>
     <script type="text/javascript" src="pages/js/bootstrap-table-export.min.js"></script>
+
+    <style type="text/css">
+        body {
+            margin: 0 0 0 0;
+            /*background-image: url('');*/
+            background-color: #afd9ee;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+            -moz-background-size: cover;
+            -webkit-background-size: cover;
+        }
+    </style>
 </head>
-<body>
+<body style="width: 80%;margin-left: 10%">
 <div class="mainhead fl" id="head">
     <h4 class="fl">历史账单查询：</h4>
 </div>
 <div id="wrapper">
     <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
-        <div class="panel" style="padding: 5px 0px;">
+        <div style="padding: 5px 0px;margin-left: 10%;">
             <div class="row">
-                <div class="col-md-4">
-                    <label style="margin-left: -26px;text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
-                    <div class="col-xs-4" style="float:right;width: 50%;">
+                <div class="col-md-3">
+                    <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
+                    <div class="col-xs-4" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="userId" placeholder="请输入" required>
                     </div>
                 </div>
                 <div class="col-md-1">
                     <div style="display: none;margin-top: 5px" id="tips">ID不能为空</div>
                 </div>
-                <div class="col-md-4">
-                    <label style="text-align:right;padding-top:5px;width: 30%;">查询时间：</label>
-                    <div class="input-daterange input-group col-xs-4" style="float:right;width: 66.5%;" id="datepicker">
+                <div class="col-md-3">
+                    <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
+                    <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="datepicker">
                         <input type="text" class="input-sm form-control" name="start" id="date_input"
                                readonly="readonly"/>
                         <span class="input-group-addon">to</span>
@@ -58,22 +71,25 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div style="padding: 5px 0px;margin-left: 10%;margin-top: 18px">
             <div class="row">
-                <div class="col-md-4">
-                    <label style="margin-left: -26px;text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
-                    <div class="col-xs-4" style="float:right;width: 50%;">
+                <div class="col-md-3">
+                    <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
+                    <div class="col-xs-4" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="viewuserid" placeholder="请输入" required>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <label style="margin-left: -26px;text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
-                    <div class="col-xs-4" style="float:right;width: 50%;">
+                <div class="col-md-1">
+                    <div style="display: none;margin-top: 5px" id="viewtips">ID均不能为空</div>
+                </div>
+                <div class="col-md-3">
+                    <label style="text-align: left; padding-top: 5px;width: 30%;">商家ID: </label>
+                    <div class="col-xs-2" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="viewshopid" placeholder="请输入" required>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="btn btn-primary col-xs-4" id="view_btn">购买</div>
+                <div class="col-sm-2">
+                    <div class="btn btn-primary col-xs-4" id="view_btn">支付</div>
                 </div>
             </div>
         </div>
@@ -131,13 +147,25 @@
         getData();
     });
 
+    //查询数据
     $("#search_btn").click(function () {
         var userId = $("#userId").val();
         if(userId == "") {
             $("#tips").attr("style","display:block");
         }
         getData();
-    })
+    });
+
+    //提交
+    $("#view_btn").click(function () {
+        var viewuserid = $("#viewuserid").val();
+        var viewshopid = $("#viewshopid").val();
+        if(viewshopid == "" || viewuserid == "") {
+            $("#viewtips").attr("style","display:block");
+        }
+        getData();
+    });
+
 
     //选择下拉框内容
     $(".dropdown-menu li").click(function () {
@@ -194,12 +222,12 @@
                     valign: 'middle',
                     title: "评分"
                 },
-                {
+                /*{
                     field: 'info.shopLevel',
                     align: 'center',
                     valign: 'middle',
                     title: "门店等级"
-                },
+                },*/
                 {
                     field: 'info.cate2Name',
                     align: 'center',

@@ -110,6 +110,7 @@ public class QueryAction extends BasicActionSupportImpl {
      */
     public void getProvinceTrade() {
         List<CityTrade> list = service.getCityTradeList();
+        //将城市成交数据统计为省份数据
         JsonHelper.printBasicJsonList(getResponse(), list);
     }
 
