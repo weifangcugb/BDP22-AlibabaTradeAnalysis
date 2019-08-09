@@ -45,4 +45,9 @@
         SELECT * FROM city_trade
     </select>
 
+    <select id="getProvinceTrade" resultType="com.aura.model.ProvinceTrade">
+        SELECT c.name as province_name,SUM(a.trade_count) AS trade_count FROM city_trade a JOIN t_city b ON a.city_name = b.name JOIN t_province c ON b.province_id = c.id GROUP BY c.name
+        UNION
+        SELECT e.name as province_name,SUM(d.trade_count) AS trade_count FROM city_trade d JOIN t_province e ON d.city_name = e.name GROUP BY e.name
+    </select>
 </mapper>

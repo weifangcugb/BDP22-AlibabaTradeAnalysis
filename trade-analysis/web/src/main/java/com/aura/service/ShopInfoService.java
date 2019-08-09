@@ -47,6 +47,12 @@ public class ShopInfoService extends BasicServiceSupportImpl{
         return list;
     }
 
+    public List<ProvinceTrade> getProvinceTradeList() {
+        List<ProvinceTrade> list = (List<ProvinceTrade>)shopInfoDao.selectList("common.shopInfo.getProvinceTrade", null);
+        return list;
+    }
+
+
     public List<MerchantTrade> getMerchantTradeList() {
         List<MerchantTrade> list = (List<MerchantTrade>)shopInfoDao.selectList("common.shopInfo.getMerchantTrade", null);
         return list;

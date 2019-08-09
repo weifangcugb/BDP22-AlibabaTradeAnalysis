@@ -7,6 +7,7 @@ import com.aura.hbase.Ingest;
 import com.aura.model.*;
 import com.aura.service.ShopInfoService;
 import com.aura.util.JsonHelper;
+import javafx.util.converter.DateStringConverter;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
@@ -14,9 +15,11 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller("queryAction")
@@ -31,7 +34,7 @@ public class QueryAction extends BasicActionSupportImpl {
     public void getHBaseQueryList() throws IOException {
         List<Object> resList = new ArrayList<>();
         String userId = this.getRequest().getParameter("userId");
-        if(userId.isEmpty() || userId.equals("")) {
+        if (userId.isEmpty() || userId.equals("")) {
             JsonHelper.printBasicJsonList(getResponse(), resList);
             return;
         }
@@ -45,8 +48,8 @@ public class QueryAction extends BasicActionSupportImpl {
 
         Scan scan = new Scan();
         //scan: set startkey and endkey
-        String startKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(startTime.replace(".",""));
-        String endKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(endTime.replace(".",""));
+        String startKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(startTime.replace(".", ""));
+        String endKey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(endTime.replace(".", ""));
         scan.setStartRow(Bytes.toBytes(startKey)).setStopRow(Bytes.toBytes(endKey));
         scan.setCaching(1000);
 
@@ -55,12 +58,12 @@ public class QueryAction extends BasicActionSupportImpl {
         //从hbase中scan符合要求数据，再去MySQL中查维度信息，根据shopId缓存返回结果
         rs.iterator().forEachRemaining(res -> {
             JSONObject jsonObject = new JSONObject();
-            for(KeyValue kv : res.raw()) {
+            for (KeyValue kv : res.raw()) {
                 try {
-                    String row = new String(res.getRow(),"utf-8");
-                    String value = new String(kv.getValue(),"utf-8");
+                    String row = new String(res.getRow(), "utf-8");
+                    String value = new String(kv.getValue(), "utf-8");
                     ShopInfo info = service.getShopInfoById(Integer.valueOf(value));
-                    jsonObject.put("userId", HistoryIngest.removeZero(row.substring(0,8)));
+                    jsonObject.put("userId", HistoryIngest.removeZero(row.substring(0, 8)));
                     jsonObject.put("payTime", HistoryIngest.formatTime(row.substring(8)));
                     jsonObject.put("info", info);
                 } catch (UnsupportedEncodingException e) {
@@ -98,7 +101,7 @@ public class QueryAction extends BasicActionSupportImpl {
     }
 
     /**
-     *  实时统计每个城市发生的交易次数
+     * 实时统计每个城市发生的交易次数
      */
     public void getCityTrade() {
         List<CityTrade> list = service.getCityTradeList();
@@ -106,12 +109,31 @@ public class QueryAction extends BasicActionSupportImpl {
     }
 
     /**
-     *  实时统计每个省份发生的交易次数
+     * 实时统计每个省份发生的交易次数
      */
     public void getProvinceTrade() {
-        List<CityTrade> list = service.getCityTradeList();
+        List<ProvinceTrade> list = service.getProvinceTradeList();
         //将城市成交数据统计为省份数据
         JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     * 更新浏览支付记录,写入文件，实际中可能会同时入库和发送至消息队列
+     */
+    public void submitTrade() {
+        String userId = this.getRequest().getParameter("userId");
+        String shopId = this.getRequest().getParameter("shopId");
+        String date = new Date().toString();
+        try {
+            String content = userId+","+shopId+","+ date;
+            FileWriter writerPay = new FileWriter("trade-analysis\\web\\data\\user_pay.txt", true);
+            FileWriter writerView = new FileWriter("trade-analysis\\web\\data\\user_view.txt", true);
+            writerPay.write(content);
+            writerView.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JsonHelper.printBasicJsonList(getResponse(), new ArrayList<>());
     }
 
 }

@@ -30,7 +30,7 @@
         body {
             margin: 0 0 0 0;
             /*background-image: url('');*/
-            background-color: #afd9ee;
+            /*background-color: #afd9ee;*/
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-size: cover;
@@ -163,7 +163,7 @@
         if(viewshopid == "" || viewuserid == "") {
             $("#viewtips").attr("style","display:block");
         }
-        getData();
+        submit(viewuserid,viewshopid);
     });
 
 
@@ -236,6 +236,24 @@
                 }
             ]
         })
+    }
+
+    //表单提交
+    function submit(viewuserid,viewshopid) {
+        $.ajax({
+            type: "POST",
+            url:"common/query_submitTrade",
+            data:{
+                userid:viewuserid,
+                shopid:viewshopid
+            },
+            dataType:"json",
+            success: function(data) {
+                $("#viewuserid").text("");
+                $("#viewshopid").text("");
+                alert("Success!")
+            }
+        });
     }
 
     //获取今天的日期 yyyyMMdd

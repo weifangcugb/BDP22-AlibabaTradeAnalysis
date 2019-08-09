@@ -54,61 +54,6 @@
 
     var colorCoord = ['#eea638', '#de4c4f', '#3398DB', '#86a965', '#a7a737', '#8aabb0', '#d8854f', '#ddb926']
 
-    var geoCoordMap = [
-        {name: "北京", 'color': colorCoord[0], 'latitude': 39.92, 'longitude': 116.46},
-        {name: "天津", 'color': colorCoord[0], 'latitude': 39.06, 'longitude': 117.28, 'position': 'right'},
-        {name: "河北", 'color': colorCoord[0], 'latitude': 38.24, 'longitude': 115.29},
-        {name: "山西", 'color': colorCoord[0], 'latitude': 37.08, 'longitude': 112.19},
-        {name: "内蒙古", 'color': colorCoord[0], 'latitude': 41.39, 'longitude': 111.22},
-
-        {name: "黑龙江", 'color': colorCoord[1], 'latitude': 46.55, 'longitude': 128.30},
-        {name: "吉林", 'color': colorCoord[1], 'latitude': 43.10, 'longitude': 126.31},
-        {name: "辽宁", 'color': colorCoord[1], 'latitude': 41.14, 'longitude': 123.03},
-
-        {name: "上海", 'color': colorCoord[2], 'latitude': 31.12, 'longitude': 121.29, 'position': 'right'},
-        {name: "江苏", 'color': colorCoord[2], 'latitude': 33.02, 'longitude': 119.47},
-        {name: "浙江", 'color': colorCoord[2], 'latitude': 29.03, 'longitude': 120.12},
-        {name: "安徽", 'color': colorCoord[2], 'latitude': 31.37, 'longitude': 117.24},
-        {name: "福建", 'color': colorCoord[2], 'latitude': 26.04, 'longitude': 118.04},
-        {name: "江西", 'color': colorCoord[2], 'latitude': 27.29, 'longitude': 115.28},
-        {name: "山东", 'color': colorCoord[2], 'latitude': 36.11, 'longitude': 117.51},
-
-        {name: "河南", 'color': colorCoord[3], 'latitude': 33.46, 'longitude': 113.37},
-        {name: "湖北", 'color': colorCoord[3], 'latitude': 30.59, 'longitude': 112.30},
-        {name: "湖南", 'color': colorCoord[3], 'latitude': 27.37, 'longitude': 111.42},
-
-        {name: "广东", 'color': colorCoord[4], 'latitude': 24.01, 'longitude': 113.19},
-        {name: "广西", 'color': colorCoord[4], 'latitude': 23.40, 'longitude': 108.56},
-        {name: "海南", 'color': colorCoord[4], 'latitude': 19.06, 'longitude': 109.45},
-
-        {name: "四川", 'color': colorCoord[5], 'latitude': 30.32, 'longitude': 103.05},
-        {name: "贵州", 'color': colorCoord[5], 'latitude': 26.50, 'longitude': 106.51},
-        {name: "云南", 'color': colorCoord[5], 'latitude': 24.28, 'longitude': 101.56},
-        {name: "西藏", 'color': colorCoord[5], 'latitude': 32.10, 'longitude': 87.26},
-        {name: "重庆", 'color': colorCoord[5], 'latitude': 29.47, 'longitude': 107.45},
-
-        {name: "陕西", 'color': colorCoord[6], 'latitude': 34.07, 'longitude': 108.59},
-        {name: "甘肃", 'color': colorCoord[6], 'latitude': 35.02, 'longitude': 104.29},
-        {name: "青海", 'color': colorCoord[6], 'latitude': 35.49, 'longitude': 96.31},
-        {name: "宁夏", 'color': colorCoord[6], 'latitude': 37.18, 'longitude': 106.13},
-        {name: "新疆", 'color': colorCoord[6], 'latitude': 41.37, 'longitude': 86.36},
-
-        {name: "台湾", 'color': colorCoord[7], 'latitude': 23.41, 'longitude': 120.51},
-        {name: "香港", 'color': colorCoord[7], 'latitude': 22.25, 'longitude': 114.05, 'position': 'right'},
-        {name: "澳门", 'color': colorCoord[7], 'latitude': 22.12, 'longitude': 113.32, 'position': 'left'}
-    ];
-
-    //根据城市名称获取位置信息
-    var getCoordMapItem = function (name) {
-        var result = undefined;
-        geoCoordMap.forEach(function (item) {
-            if (name == item.name) {
-                result = item;
-            }
-        });
-        return result;
-    }
-
     /**
      * [{title:"xxx",url:"http://xxx",value:20}] ->
      * ["xxx:20","xxx1:30","xxx2:40"] or [{url:"http://xxx",value:20},{url:"http://xxx1",value:30},{url:"http://xxx2",value:40}]
@@ -255,80 +200,80 @@
 
 
     function ajaxQuery() {
-        var getUrl = "common/query_getProvinceTrade";
+        var getUrl = "common/query_getCityTrade";
+        var areadata = [];
+        var maxValue = 0;
 
-        $.get({url: getUrl}).done(function (data) {
-
-            var areadata = [];
-            var maxValue = 0;
-
-            data.forEach(function (item) {
-                if(item.tradeCount > maxValue) {
-                    maxValue = item.tradeCount;
-                }
-                areadata.push({name:item.cityName,value:item.tradeCount})
-            });
-
-            if (areadata.length == 0) {
-                return;
+        $.ajax({
+            async: false,
+            url: getUrl,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                data.map(function (item) {
+                    if (item.tradeCount > maxValue) {
+                        maxValue = item.tradeCount;
+                    }
+                    areadata.push({name: item.provinceName, value: item.tradeCount});
+                });
             }
-
-            var map_option =
-                {
-                    title: {
-                        text: '各省份实时交易数据',
-                        x: 'center',
-                        textStyle: {
-                            color: '#3B6C88'
-                        }
-                    },
-                    tooltip: {
-                        trigger: 'item'
-                    },
-                    dataRange: {
-                        orient: 'horizontal',
-                        min: 0,
-                        max: maxValue,
-                        text: ['高', '低'],           // 文本，默认为数值文本
-                        splitNumber: 0,
-                        inRange: {
-                            color: ['#FE8463','#9BCA63','#FAD860','#60C0DD']
-                        }
-
-                    },
-                    toolbox: {
-                        show: false,
-                        orient: 'vertical',
-                        x: 'right',
-                        y: 'center',
-                        feature: {
-                            mark: {show: true},
-                            dataView: {show: true, readOnly: false}
-                        }
-                    },
-                    series: [
-                        {
-                            name: '成交量',
-                            type: 'map',
-                            mapType: 'china',
-                            mapLocation: {
-                                x: 'left'
-                            },
-                            zoom: 1.1,
-                            selectedMode: 'multiple',
-                            itemStyle: {
-                                normal: {label: {show: true},borderColor: "#389BB7"},
-                                emphasis: {label: {show: true}}
-                            },
-                            data: areadata   //[{name:"北京",value:62},...]
-                        }
-                    ],
-                    animation: false
-                };
-
-            myChart.setOption(map_option, true);
-
         });
+
+        var map_option =
+            {
+                title: {
+                    text: '各省份实时交易数据',
+                    x: 'center',
+                    textStyle: {
+                        color: '#3B6C88'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                dataRange: {
+                    orient: 'horizontal',
+                    min: 0,
+                    max: maxValue,
+                    text: ['高', '低'],           // 文本，默认为数值文本
+                    splitNumber: 0,
+                    inRange: {
+                        color: ['#FE8463', '#9BCA63', '#FAD860', '#60C0DD']
+                    }
+
+                },
+                toolbox: {
+                    show: false,
+                    orient: 'vertical',
+                    x: 'right',
+                    y: 'center',
+                    feature: {
+                        mark: {show: true},
+                        dataView: {show: true, readOnly: false}
+                    }
+                },
+                series: [
+                    {
+                        name: '成交量',
+                        type: 'map',
+                        mapType: 'china',
+                        mapLocation: {
+                            x: 'left'
+                        },
+                        zoom: 1.1,
+                        selectedMode: 'multiple',
+                        itemStyle: {
+                            normal: {label: {show: true}, borderColor: "#389BB7"},
+                            emphasis: {label: {show: true}}
+                        },
+                        data: areadata   //[{name:"北京",value:62},...]
+                    }
+                ],
+                animation: false
+            };
+
+        myChart.setOption(map_option, true);
+
     }
 
     ajaxQuery();
