@@ -200,7 +200,7 @@
 
 
     function ajaxQuery() {
-        var getUrl = "common/query_getCityTrade";
+        var getUrl = "common/query_getProvinceTrade";
         var areadata = [];
         var maxValue = 0;
 
@@ -278,7 +278,7 @@
 
     ajaxQuery();
     //定时任务 刷新地图
-    setInterval(ajaxQuery, interval * 1000);
+    // setInterval(ajaxQuery, interval * 1000);
 
     myChart.on('click', function (params) {
         var seriesType = params.seriesType;

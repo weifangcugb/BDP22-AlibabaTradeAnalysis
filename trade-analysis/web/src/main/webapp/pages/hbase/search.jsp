@@ -47,16 +47,16 @@
     <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
         <div style="padding: 5px 0px;margin-left: 10%;">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
-                    <div class="col-xs-4" style="float:right;width: 60%;">
+                    <div class="col-xs-3" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="userId" placeholder="请输入" required>
                     </div>
                 </div>
                 <div class="col-md-1">
                     <div style="display: none;margin-top: 5px" id="tips">ID不能为空</div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
                     <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="datepicker">
                         <input type="text" class="input-sm form-control" name="start" id="date_input"
@@ -66,14 +66,14 @@
                                readonly="readonly"/>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="btn btn-primary col-xs-4" id="search_btn">查询</div>
                 </div>
             </div>
         </div>
         <div style="padding: 5px 0px;margin-left: 10%;margin-top: 18px">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
                     <div class="col-xs-4" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="viewuserid" placeholder="请输入" required>
@@ -82,13 +82,13 @@
                 <div class="col-md-1">
                     <div style="display: none;margin-top: 5px" id="viewtips">ID均不能为空</div>
                 </div>
-                <div class="col-md-3">
-                    <label style="text-align: left; padding-top: 5px;width: 30%;">商家ID: </label>
+                <div class="col-md-4">
+                    <label style="text-align: left; padding-top: 5px;width: 30%;padding-left: 10px">商家ID: </label>
                     <div class="col-xs-2" style="float:right;width: 60%;">
                         <input type="text" class="input-sm form-control" id="viewshopid" placeholder="请输入" required>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <div class="btn btn-primary col-xs-4" id="view_btn">支付</div>
                 </div>
             </div>

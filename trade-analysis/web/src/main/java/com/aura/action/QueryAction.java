@@ -1,5 +1,6 @@
 package com.aura.action;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import javax.annotation.Resource;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -114,7 +116,16 @@ public class QueryAction extends BasicActionSupportImpl {
     public void getProvinceTrade() {
         List<ProvinceTrade> list = service.getProvinceTradeList();
         //将城市成交数据统计为省份数据
-        JsonHelper.printBasicJsonList(getResponse(), list);
+//        JsonHelper.printBasicJsonList(getResponse(), list);
+        String result = JSON.toJSONString(list);
+        PrintWriter out = null;
+        try {
+            out = getResponse().getWriter();
+            out.print(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.close();
     }
 
     /**
