@@ -50,4 +50,16 @@
         UNION
         SELECT e.name as province_name,SUM(d.trade_count) AS trade_count FROM city_trade d JOIN t_province e ON d.city_name = e.name GROUP BY e.name
     </select>
+
+    <select id="getShopTradeView" resultType="com.aura.model.result.ShopTradeView">
+        select * from shop_trade_view;
+    </select>
+
+    <select id="getCityConsume" resultType="com.aura.model.result.CityConsume">
+        select * from city_consume order by consume desc limit 10;
+    </select>
+
+    <select id="getPopuShopTrade" resultType="com.aura.model.result.PopuShopTrade">
+        select * from popu_shop_trade;
+    </select>
 </mapper>

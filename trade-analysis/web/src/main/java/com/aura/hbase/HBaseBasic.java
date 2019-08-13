@@ -13,7 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
-public abstract class HBaseBasic {
+public abstract class  HBaseBasic {
 
     public static Configuration getHbaseConf() {
         Configuration conf = HBaseConfiguration.create();

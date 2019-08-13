@@ -136,7 +136,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		</a>
   	</div>
   	<div class="content marginTop">
-  		<a href="pages/memory/memory.jsp" target="_blank">
+  		<a href="pages/presto/query.jsp" target="_blank">
   			<img src="pages/images/memory.png" width="250px" height="180px" title="内存计算框架-Spark Core" />
   		</a>
   	</div>

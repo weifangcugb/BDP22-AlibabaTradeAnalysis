@@ -29,6 +29,17 @@ public class JavaDBDao {
 
     private static String deleteCityTrade = "delete from city_trade where city_name = ?";
 
+    private static String insertCityConsume = "insert into city_consume values(?,?,now())";
+
+    private static String insertPopuShopTrade = "insert into popu_shop_trade values (?,?)";
+
+    private static String insertShopTradeView = "insert into shop_trade_view values(?,?,?)";
+
+    private static String saveMostViewShopTop50Sql = "insert into most_view_shop values(?,?,?)";
+
+    private static String saveRetainedAnalysisSql = "insert into retained_analysis values(?,?,?,?)";
+
+
     private static void execute(Connection conn, String sql, Object... params) throws SQLException {
         PreparedStatement pstm = null;
         try {
@@ -74,6 +85,10 @@ public class JavaDBDao {
         execute(conn, savePopulShopSql,shopId, cate, grade);
     }
 
+    public static void saveMostViewShopTop50(Connection conn, int shopId, String  city, Long pay) throws SQLException {
+        execute(conn, saveMostViewShopTop50Sql,shopId, city, pay);
+    }
+
     public static void insertOrUpdateM(Connection conn, int shopId, int tradeCount) throws SQLException {
         execute(conn, deleteShopTrade, shopId);
         execute(conn,insertShopTrade,shopId,tradeCount);
@@ -82,6 +97,22 @@ public class JavaDBDao {
     public static void insertOrUpdateC(Connection conn, String cityName, int tradeCount) throws SQLException {
         execute(conn, deleteCityTrade, cityName);
         execute(conn,insertCityTrade,cityName,tradeCount);
+    }
+
+    public static void saveCityConsume(Connection conn,String cityName,long consume) throws SQLException {
+        execute(conn,insertCityConsume, cityName, consume);
+    }
+
+    public static void savePopuShopTrade(Connection conn,String shop,double pay) throws SQLException {
+        execute(conn,insertPopuShopTrade, shop, pay);
+    }
+
+    public static void saveShopTradeView(Connection conn,String date,Integer pay,Integer view) throws SQLException {
+        execute(conn,insertShopTradeView, date, pay,view);
+    }
+
+    public static void saveRetainedAnalysis(Connection conn,int shop,String date,String days,double rate) throws SQLException {
+        execute(conn,saveRetainedAnalysisSql,shop, date, days, rate);
     }
 
     public static Map<String,String> getShopCityMap() {

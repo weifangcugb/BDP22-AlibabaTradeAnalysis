@@ -6,7 +6,11 @@ import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
 import com.aura.model.*;
+import com.aura.model.result.CityConsume;
+import com.aura.model.result.PopuShopTrade;
+import com.aura.model.result.ShopTradeView;
 import com.aura.service.ShopInfoService;
+import com.aura.spark.sql.MerchantsTradeAnalysis;
 import com.aura.util.JsonHelper;
 import javafx.util.converter.DateStringConverter;
 import org.apache.hadoop.hbase.KeyValue;
@@ -147,4 +151,38 @@ public class QueryAction extends BasicActionSupportImpl {
         JsonHelper.printBasicJsonList(getResponse(), new ArrayList<>());
     }
 
+    /**
+     *统计所有商家交易发生次数和被用户浏览次数
+     */
+    public void getShopTradeView() {
+        List<ShopTradeView> list = service.getShopTradeView();
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     *统计每个城市总体消费金额
+     */
+    public void getCityConsume() {
+        List<CityConsume> list = service.getCityConsume();
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     *统计最受欢迎的前10类商品（按照二级分类统计），并输出他们的人均消费
+     */
+    public void getPopuShopTrade() {
+        List<PopuShopTrade> list = service.getPopuShopTrade();
+        JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    /**
+     * 给定一个商店（可动态指定），输出该商店每天、每周和每月的被浏览数量
+     */
+    public void getShopViewByDay() {
+        String shopId = this.getRequest().getParameter("shopId");
+        String startTime = this.getRequest().getParameter("startTime");
+        String stopTime = this.getRequest().getParameter("endTime");
+        JSONObject object = new MerchantsTradeAnalysis().getShopView(shopId,startTime,stopTime);
+        JsonHelper.printBasicJsonObject(getResponse(), object);
+    }
 }

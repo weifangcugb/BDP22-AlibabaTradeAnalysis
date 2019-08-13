@@ -25,6 +25,10 @@
     <script type="text/javascript" src="pages/js/search.js"></script>
     <script type="text/javascript" src="pages/js/bootstrap-table-zh-CN.js"></script>
     <script type="text/javascript" src="pages/js/bootstrap-table-export.min.js"></script>
+    <script type="text/javascript" src="pages/echarts-3.2.1/echarts.min.js"></script>
+    <script type="text/javascript" src="pages/echarts-3.2.1/china.js"></script>
+    <script type="text/javascript" src="pages/echarts-3.2.1/world.js"></script>
+    <script type="text/javascript" src="pages/js/echarts3-basic.js?v=1.1"></script>
 
     <style type="text/css">
         body {
@@ -111,9 +115,162 @@
         </div>
     </div>
 </div>
+<div class="mainhead fl" id="head">
+    <h4 class="fl">商家浏览量查询：</h4>
+</div>
+<div id="wrapper">
+    <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+        <div style="padding: 5px 0px;margin-left: 10%;">
+            <div class="row">
+                <div class="col-md-4">
+                    <label style="text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
+                    <div class="col-xs-3" style="float:right;width: 60%;">
+                        <input type="text" class="input-sm form-control" id="shop_Id" placeholder="请输入" required>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div style="display: none;margin-top: 5px" id="shop_tips">ID不能为空</div>
+                </div>
+                <div class="col-md-4">
+                    <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
+                    <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="shop_datepicker">
+                        <input type="text" class="input-sm form-control" name="start" id="shop_date_input"
+                               readonly="readonly"/>
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="input-sm form-control" name="end" id="shop_date_input_end"
+                               readonly="readonly"/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="btn btn-primary col-xs-4" id="shop_view_btn">查询</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel" style="padding: 20px 0px;" id="shop_view">
+
+        </div>
+    </div>
+</div>
 </body>
 
 <script>
+    var height = $(window).height() / 2 - 15;
+    $("#shop_view").height(height);
+
+    var shopView = echarts.init(document.getElementById('shop_view'));
+
+    $("#shop_view_btn").click(function () {
+        var shopId = $("#shop_Id").val();
+        var startTime = $("#shop_date_input").val();
+        var endTime = $("#shop_date_input_end").val();
+        if(shopId == "") {
+            $("#shop_tips").attr("style","display:block");
+        }else{
+            $.get({url:"common/query_getShopViewByDay?shopId="+shopId+"&startTime="+startTime+"&endTime="+endTime}).done(function(data) {
+                var days = [];
+                var months = [];
+                var dayViews = [];
+                var monthViews = [];
+                data.day.map(function(item) {
+                    days.push(item.date);
+                    dayViews.push(item.viewTime);
+                });
+                data.mon.map(function(item) {
+                    months.push(item.date);
+                    monthViews.push(item.viewTime);
+                });
+                var types = ["交易次数","浏览次数"]
+                var datas = [dayViews,monthViews];
+                var option = {
+                    title: {
+                        text: "口碑交易统计",
+                        textStyle: {
+                            color: '#ffffff'
+                        }
+                    },
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        textStyle: {
+                            color: '#ffffff'
+                        },
+                        x : 'right',
+                        y : 'top',
+                        data: types
+                    },
+                    grid: {
+                        top: 40,
+                        left: 30,
+                        right: 32,
+                        bottom: 5,
+                        containLabel: true
+                    },
+                    xAxis : [
+                        {
+                            type : 'category',
+                            boundaryGap : false,
+                            splitLine: {show: false},
+                            axisLine: {lineStyle: {color: '#ffffff'}},
+                            data: days
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value',
+                            splitLine: {show: false},
+                            axisLine: {lineStyle: {color: '#ffffff'}}
+                        }
+                    ],
+                    series : [
+                        {
+                            name:types[0],
+                            type:'line',
+                            symbol: 'emptyTriangle',
+                            symbolSize: 10,
+                            markPoint: {
+                                data: [
+                                    {type: 'max', name: '最大值'},
+                                    {type: 'min', name: '最小值'}
+                                ]
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#de4c4f'/*,
+                                lineStyle: {
+                                    width: 2,
+                                    type: 'dashed'
+                                }*/
+                                }
+                            },
+                            data:datas[0]
+                        },
+                        {
+                            name:types[1],
+                            type:'line',
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            smooth: true,
+                            markPoint: {
+                                data: [
+                                    {type: 'max', name: '最大值'},
+                                    {type: 'min', name: '最小值'}
+                                ]
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#eea638'
+                                }
+                            },
+                            data:datas[1]
+                        }
+                    ]
+                };
+                shopView.setOption(option);
+            });
+        }
+
+    });
 
     $(function () {
         $('#date_input').datepicker({
@@ -145,6 +302,36 @@
         $('#date_input_end').datepicker('setDate', d2);
         //根据日期请求数据
         getData();
+    });
+
+    $(function () {
+        $('#shop_date_input').datepicker({
+            orientation: "bottom",
+            autoclose: true,
+            format: "yyyy-mm-dd",
+            language: "zh-CN",
+            todayHighlight: true
+        }).on('changeDate', function (e) {
+            var startTime = e.date;
+            $('#shop_date_input_end').datepicker('setStartDate', startTime);
+        });
+
+        $('#shop_date_input_end').datepicker({
+            orientation: "bottom",
+            autoclose: true,
+            format: "yyyy-mm-dd",
+            language: "zh-CN",
+            todayHighlight: true
+        }).on('changeDate', function (e) {
+            var endTime = e.date;
+            $('#shop_date_input').datepicker('setEndDate', endTime);
+        });
+        //初始化日期输入框为当天日期
+        var d1 = new Date("2016-01-01");
+        var d2 = new Date("2016-12-31");
+        $('#shop_date_input').datepicker('setDate', d1);
+        $('#shop_date_input_end').datepicker('setDate', d2);
+        //根据日期请求数据
     });
 
     //查询数据
@@ -270,6 +457,8 @@
         var day = d.getDate();
         return year + ""  + month + "" + day;
     };
+
+
 
 </script>
 </html>

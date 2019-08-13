@@ -3,6 +3,9 @@ package com.aura.service;
 import com.aura.basic.BasicServiceSupportImpl;
 import com.aura.dao.ShopInfoDao;
 import com.aura.model.*;
+import com.aura.model.result.CityConsume;
+import com.aura.model.result.PopuShopTrade;
+import com.aura.model.result.ShopTradeView;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -58,4 +61,18 @@ public class ShopInfoService extends BasicServiceSupportImpl{
         return list;
     }
 
+    public List<ShopTradeView> getShopTradeView() {
+        List<ShopTradeView> list = (List<ShopTradeView>) shopInfoDao.selectList("common.shopInfo.getShopTradeView",null);
+        return list;
+    }
+
+    public List<CityConsume> getCityConsume() {
+        List<CityConsume> list = (List<CityConsume>) shopInfoDao.selectList("common.shopInfo.getCityConsume",null);
+        return list;
+    }
+
+    public List<PopuShopTrade> getPopuShopTrade() {
+        List<PopuShopTrade> list = (List<PopuShopTrade>) shopInfoDao.selectList("common.shopInfo.getPopuShopTrade",null);
+        return list;
+    }
 }

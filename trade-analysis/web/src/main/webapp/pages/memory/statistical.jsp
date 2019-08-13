@@ -52,18 +52,22 @@
 </head>
 
 <body>
-<div id="chartContent0" style="width: 30%;float: left;margin-top:100px;margin-left: 100px" class="chart"></div>
-<div id="chartContent1" style="width: 30%;float: left;margin-top:100px;" class="chart"></div>
-<div id="chartContent2" style="width: 30%;float: left;margin-top:100px;" class="chart marginRight"></div>
+<div id="chartContent0" style="width: 30%;float: left;margin-top:20px;margin-left: 100px" class="chart"></div>
+<div id="chartContent1" style="width: 30%;float: left;margin-top:20px;" class="chart"></div>
+<div id="chartContent2" style="width: 30%;float: left;margin-top:20px;" class="chart marginRight"></div>
+<div id="chartContent3" style="width: 30%;float: left;margin-top:20px;" class="chart"></div>
+
 <script type="text/javascript">
     var height = $(window).height() / 2 - 15;
     $("#chartContent0").height(height);
     $("#chartContent1").height(height);
     $("#chartContent2").height(height);
+    $("#chartContent3").height(height);
 
     var chartContent0 = echarts.init(document.getElementById('chartContent0'));
     var chartContent1 = echarts.init(document.getElementById('chartContent1'));
     var chartContent2 = echarts.init(document.getElementById('chartContent2'));
+    var chartContent3 = echarts.init(document.getElementById('chartContent3'));
 
     function ajaxQuery() {
 
@@ -108,7 +112,24 @@
             var option = getOptionContent2("最受欢迎中式快餐排行", shops, grades);
             chartContent2.setOption(option);
         });
+
+        /**
+         * 找到被浏览次数最多的50个商家，并输出他们的城市以及人均消费，并选择合适的图表对结果进行可视化
+         */
+        $.get({url: "common/query_getPopulShop?cate=中式快餐"}).done(function (data) {
+            var shops = [];
+            var grades = [];
+            data.map(function (item) {
+                shops.push(item.shopId + " : " + item.grade);
+                grades.push(item.grade);
+            });
+            var option = getOptionContent3("被浏览次数最多的商家", shops, grades);
+            chartContent3.setOption(option);
+        });
+
+
     }
+
     ajaxQuery();
 </script>
 </body>
