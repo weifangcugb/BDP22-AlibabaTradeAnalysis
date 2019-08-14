@@ -1,0 +1,11 @@
+CREATE TABLE `query_result` (
+  `queryday` varchar(32) NOT NULL COMMENT '查询日期',
+  `currentday` varchar(32) DEFAULT NULL COMMENT '当天',
+  `firstday` varchar(32) DEFAULT NULL COMMENT '第一天',
+  `secondday` varchar(32) DEFAULT NULL COMMENT '第二天',
+  `thirthday` varchar(32) DEFAULT NULL COMMENT '第三天',
+  `fourthday` varchar(32) DEFAULT NULL COMMENT '第四天',
+  `fivthday` varchar(32) DEFAULT NULL COMMENT '第五天',
+  `sixthday` varchar(32) DEFAULT NULL COMMENT '第六天',
+  `seventhday` varchar(32) DEFAULT NULL COMMENT '第七天'
+);
