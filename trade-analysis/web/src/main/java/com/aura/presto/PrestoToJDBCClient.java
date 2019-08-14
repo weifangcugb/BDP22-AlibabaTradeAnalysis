@@ -1,5 +1,7 @@
 package com.aura.presto;
 
+import com.alibaba.fastjson.JSONObject;
+import com.aura.basic.BasicDao;
 import com.aura.database.JDBCUtils;
 import com.aura.util.AuraConfig;
 import com.typesafe.config.Config;
@@ -74,6 +76,38 @@ public abstract class PrestoToJDBCClient {
         }
         return shopIds.substring(0, shopIds.length()-2);
     }
+
+    //将查询结果保存到mysql
+    public int svaeMysql(JSONObject js){
+        Connection conn = null;
+        int i = 0;
+        try{
+            String sql = "insert into query_result ( queryday, currentday, firstday, secondday," +
+                    "thirthday, fourthday, fivthday, sixthday, seventhday) values('"+js.getString("day")+"'," +
+                    "'"+js.getString("day0")+"','"+js.getString("day1")+"','"+js.getString("day2")+"'," +
+                    "'"+js.getString("day3")+"','"+js.getString("day4")+"','"+js.getString("day5")+"'," +
+                    "'"+js.getString("day6")+"'," +
+                    "'"+js.getString("day7")+"')";
+            System.out.println("-----savesql ----"+sql);
+            conn = JDBCUtils.getConnection();
+            i = BasicDao.executeSql(sql, conn);
+        }catch (SQLException s){
+            s.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (conn != null){
+                    conn.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return i;
+    }
+
+
 
     //关闭资源
     public static void close(Connection conn, ResultSet rs, Statement statement){
