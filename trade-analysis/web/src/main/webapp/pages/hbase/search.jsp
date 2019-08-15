@@ -45,6 +45,45 @@
 </head>
 <body style="width: 80%;margin-left: 10%">
 <div class="mainhead fl" id="head">
+    <h4 class="fl">留存率查询：</h4>
+</div>
+<div id="wrapper">
+    <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+        <div class="panel" style="padding: 5px 0px;">
+            <div class="row">
+                <div class="col-md-4">
+                    <label style="text-align:right;padding-top:5px;width: 30%;">查询日期：</label>
+                    <div class="input-daterange input-group col-xs-4" style="float:right;width: 66.5%;" id="datepicker_retained">
+                        <input type="text" class="input-sm form-control" name="start" id="date_input_retained"
+                               readonly="readonly"/>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn btn-primary col-xs-4" id="search_btn_retained">查询</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel" style="padding: 20px 0px;">
+            <div class="section-data" style="padding: 0px 5px;">
+                <table data-row-style="rowStyle"
+                       data-show-export="true"
+                       data-pagination="true"
+                       data-thead-classes="thead-light"
+                       data-striped="true"
+                       data-sort-name="createTime"
+                       data-sort-order="desc"
+                       data-sort-stable="true"
+                       data-search="true"
+                       data-pagination-successively-size="1"
+                       id="show_table_retained">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="mainhead fl" id="head">
     <h4 class="fl">历史账单查询：</h4>
 </div>
 <div id="wrapper">
@@ -458,6 +497,115 @@
         return year + ""  + month + "" + day;
     };
 
+    <!--留存率查询-->
+    function getDataRetained() {
+        var startDate = $("#date_input_retained").val();
+        //startDate = startDate.replace(/-/g, '');
+        $("#show_table_retained").bootstrapTable('destroy');
+
+        $("#show_table_retained").bootstrapTable.prototype.getPage = function (params) {
+            return {pageSize: this.options.pageSize, pageNumber: this.options.pageNumber};
+        };
+        $("#show_table_retained").bootstrapTable({
+            method: 'get',
+            url: "common/retained_getRetainedList?startTime=" + startDate,
+            dataType: "json",
+            striped:true,
+            cache:true,
+            pagination: true,
+            paginationLoop:false,
+            paginationPreText:'上一页',
+            paginationNextText:'下一页',
+            sortable: true,
+            search:false,
+            pageNumber:1,
+            pageSize:10,
+            height: $(window).height() - 460,
+            // queryParams : null,
+            exportDataType: "all",
+            columns: [
+                {
+                    field: 'day',
+                    title: "日期",
+                    align: 'center',
+                    valign: 'middle'
+                }, {
+                    field: 'day0',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第0天"
+                }, {
+                    field: 'day1',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第1天"
+                }, {
+                    field: 'day2',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第2天"
+                }, {
+                    field: 'day3',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第3天"
+                }, {
+                    field: 'day4',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第4天"
+                },
+                {
+                    field: 'day5',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第5天"
+                },
+                {
+                    field: 'day6',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第6天"
+                },
+                {
+                    field: 'day7',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "第7天"
+                }
+            ],
+            formatter: function (val, row, index) {
+                // return index+1
+                var pageSize = $('#show_table_retained').bootstrapTable('destroy').pageSize;     //通过table的#id 得到每页多少条
+                var pageNumber = $('#show_table_retained').bootstrapTable('destroy').pageNumber; //通过table的#id 得到当前第几页
+                return pageSize * (pageNumber - 1) + index + 1;    // 返回每条的序号： 每页条数 *（当前页 - 1 ）+ 序号
+            }
+        })
+    }
+    $(function () {
+        $('#date_input_retained').datepicker({
+            orientation: "bottom",
+            autoclose: true,
+            format: "yyyy-mm",
+            language: "zh-CN",
+            todayHighlight: true
+        }).on('changeDate', function (e) {
+            var startTime = e.date;
+            //$('#date_input_end').datepicker('setStartDate', startTime);
+        });
+
+        //初始化日期输入框为当天日期
+        var date = getDate();
+        var d1 = new Date("2016-01-01");
+        var d2 = new Date("2016-12-31");
+        $('#date_input_retained').datepicker('setDate', d1);
+        //根据日期请求数据
+        getDataRetained();
+    });
+
+    $("#search_btn_retained").click(function () {
+        getDataRetained();
+    })
 
 
 </script>
