@@ -27,7 +27,11 @@ public class HBaseFile {
             in = new BufferedReader(new InputStreamReader(hdfsInStream));
             String line = null;
             while ((line = in.readLine()) != null) {
-                byte []str = line.getBytes("utf-8");
+                String[] parts = line.split(",", -1);
+                String rowkey = HistoryIngest.userIdCompletion(parts[0]) + HistoryIngest.removeLineAndSpace(parts[2].substring(0,13));
+                String shopId = parts[1];
+                String hbase_line =  rowkey+","+shopId+"\n";
+                byte []str = hbase_line.getBytes("utf-8");
                 outputStream.write(str);
             }
         } catch (IOException e) {
@@ -52,6 +56,7 @@ public class HBaseFile {
 
     public static void main(String[] args) {
         HBaseFile file = new HBaseFile();
-        file.exportHBaseFile("hdfs://master:9000/trade-analysis/user_pay_55M.txt", "C:\\Users\\weifang\\Desktop\\test.txt");
+        file.exportHBaseFile("E:\\2019光环大数据\\百度网盘\\结业项目\\阿里巴巴口碑商家客流分析系统\\数据\\IJCAI17_original\\dataset\\user_pay.txt",
+                "E:\\2019光环大数据\\百度网盘\\结业项目\\阿里巴巴口碑商家客流分析系统\\数据\\IJCAI17_original\\dataset\\user_pay_hbase.txt");
     }
 }
