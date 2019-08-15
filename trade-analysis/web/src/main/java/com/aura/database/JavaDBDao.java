@@ -39,6 +39,10 @@ public class JavaDBDao {
 
     private static String saveRetainedAnalysisSql = "insert into retained_analysis values(?,?,?,?)";
 
+    private static String saveShopViewByDay = "insert into shop_view_analysis1 values(?,?,?,?)";
+
+    private static String deleteShopViewByDay = "delete from shop_view_analysis";
+
 
     private static void execute(Connection conn, String sql, Object... params) throws SQLException {
         PreparedStatement pstm = null;
@@ -77,15 +81,15 @@ public class JavaDBDao {
         execute(conn, saveCityTradeSql, cityName, tradeCount);
     }
 
-    public static void saveTradeAccount(Connection conn, int shopId, int tradeCount) throws SQLException {
+    public static void saveTradeAccount(Connection conn, Long shopId, Long tradeCount) throws SQLException {
         execute(conn, saveTradeAccountSql, shopId, tradeCount);
     }
 
-    public static void savePopulShop(Connection conn, int shopId, String  cate, double grade) throws SQLException {
+    public static void savePopulShop(Connection conn, Long shopId, String  cate, double grade) throws SQLException {
         execute(conn, savePopulShopSql,shopId, cate, grade);
     }
 
-    public static void saveMostViewShopTop50(Connection conn, int shopId, String  city, Long pay) throws SQLException {
+    public static void saveMostViewShopTop50(Connection conn, Long shopId, String  city, Long pay) throws SQLException {
         execute(conn, saveMostViewShopTop50Sql,shopId, city, pay);
     }
 
@@ -113,6 +117,14 @@ public class JavaDBDao {
 
     public static void saveRetainedAnalysis(Connection conn,int shop,String date,String days,double rate) throws SQLException {
         execute(conn,saveRetainedAnalysisSql,shop, date, days, rate);
+    }
+
+    public static void saveShopViewByDay(Connection conn,int shop,String date,Long viewTimes,String label) throws SQLException {
+        execute(conn,saveShopViewByDay,shop, date, viewTimes, label);
+    }
+
+    public static void deleteShopViewByDay(Connection conn) throws SQLException {
+        execute(conn,deleteShopViewByDay);
     }
 
     public static Map<String,String> getShopCityMap() {

@@ -18,10 +18,7 @@ import java.text.DecimalFormat;
 @Controller("historyIngest")
 public class HistoryIngest extends Ingest {
 
-    @Resource
-    private ShopInfoService service;
-
-    private static final String user_pay = "hdfs://master:9000/bdp22/dataset/user_pay.txt";
+    private static final String user_pay = "hdfs://master:9000/trade-analysis/user_pay/user_pay.txt";
     public static final String QUALIFIER_NAME_SHOPID = "shopid";
 
     //insert data to hbase
@@ -38,19 +35,11 @@ public class HistoryIngest extends Ingest {
             in = new BufferedReader(new InputStreamReader(hdfsInStream));
             String line = null;
             while ((line = in.readLine()) != null) {
-//                System.out.println(line);
                 String[] parts = line.split(",", -1);
                 String rowkey = userIdCompletion(parts[0]) + removeLineAndSpace(parts[2].substring(0,13));
                 Put put = new Put(Bytes.toBytes(rowkey));
-                //get shop_info from MySQL
-//                System.out.println(parts[1]);
-//                ShopInfo info = service.getShopInfoById(Integer.valueOf(parts[1].trim()));
                 //byte[] family, byte[] qualifier, byte[] value
                 put.addColumn(Bytes.toBytes(column_family_cf1), Bytes.toBytes(QUALIFIER_NAME_SHOPID), Bytes.toBytes(parts[1].trim()));
-//                put.addColumn(Bytes.toBytes(column_family_cf1), Bytes.toBytes(QUALIFIER_NAME_CITYNAME), Bytes.toBytes(info.getCityName()));
-//                put.addColumn(Bytes.toBytes(column_family_cf1), Bytes.toBytes(QUALIFIER_NAME_CATE2), Bytes.toBytes(info.getCate2Name()));
-//                put.addColumn(Bytes.toBytes(column_family_cf1), Bytes.toBytes(QUALIFIER_NAME_PERPAY), Bytes.toBytes(info.getPerPay()));
-
                 table.put(put);
             }
         } catch (IOException e) {
@@ -90,10 +79,14 @@ public class HistoryIngest extends Ingest {
 
     //转化为时间格式
     public static String formatTime(String time) {
-        if(time.isEmpty() || time.length() != 8) {
+        if(time.isEmpty() || time.length() != 10) {
             throw new RuntimeException("time wrong");
         }
-        return time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6);
+        return time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6,8)+" " + time.substring(8)+":00:00";
     }
 
+    public static void main(String[] args) {
+        HistoryIngest ingest = new HistoryIngest();
+        ingest.process();
+    }
 }

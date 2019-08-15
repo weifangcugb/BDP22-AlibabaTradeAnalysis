@@ -1,6 +1,19 @@
 
 package com.aura.presto;
 
+import com.aura.presto.PrestoToJDBCClient;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+
+
 import com.alibaba.fastjson.JSONObject;
 import org.apache.spark.sql.catalyst.SQLBuilder;
 import org.springframework.stereotype.Service;
@@ -18,7 +31,7 @@ import java.util.Date;
  * 任务４　留存分析实现
  */
 @Service("retainedAnalysis")
-public class RetainedAnalysis extends PrestoToJDBCClient{
+public class RetainedAnalysis extends PrestoToJDBCClient {
 
     private String fristDayRetainedAte = "0.0%";
     private String secondDayRetainedAte = "0.0%";
@@ -71,39 +84,39 @@ public class RetainedAnalysis extends PrestoToJDBCClient{
         sbuffer.append("count(day6.user_id) as day6, ");
         sbuffer.append("count(day7.user_id) as day7 ");
 
-        sbuffer.append(" from aura.user_view_orc userview ");
+        sbuffer.append(" from default.user_view_orc userview ");
         //第一天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t1 where substr(cast(t1.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t1 where substr(cast(t1.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday1+"' and ( t1.shop_id = "+shopids[0]+" or t1.shop_id =  "+shopids[1]+" or t1.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day1 on userview.user_id=day1.user_id ");
 
         //第二天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t2 where substr(cast(t2.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t2 where substr(cast(t2.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday2+"' and ( t2.shop_id = "+shopids[0]+" or t2.shop_id =  "+shopids[1]+" or t2.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day2 on day1.user_id=day2.user_id ");
 
         //第三天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t3 where substr(cast(t3.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t3 where substr(cast(t3.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday3+"' and ( t3.shop_id = "+shopids[0]+" or t3.shop_id =  "+shopids[1]+" or t3.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day3 on day2.user_id=day3.user_id ");
 
         //第四天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t4 where substr(cast(t4.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t4 where substr(cast(t4.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday4+"' and ( t4.shop_id = "+shopids[0]+" or t4.shop_id =  "+shopids[1]+" or t4.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day4 on day3.user_id=day4.user_id ");
 
         //第五天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t5 where substr(cast(t5.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t5 where substr(cast(t5.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday5+"' and ( t5.shop_id = "+shopids[0]+" or t5.shop_id =  "+shopids[1]+" or t5.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day5 on day4.user_id=day5.user_id ");
 
         //第六天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t6 where substr(cast(t6.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t6 where substr(cast(t6.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday6+"' and ( t6.shop_id = "+shopids[0]+" or t6.shop_id =  "+shopids[1]+" or t6.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day6 on day5.user_id=day6.user_id ");
 
         //第七天
-        sbuffer.append("left join (select user_id from aura.user_view_orc t7 where substr(cast(t7.view_time as ");
+        sbuffer.append("left join (select user_id from default.user_view_orc t7 where substr(cast(t7.view_time as ");
         sbuffer.append("varchar),1,10)='"+afterday7+"' and ( t7.shop_id = "+shopids[0]+" or t7.shop_id =  "+shopids[1]+" or t7.shop_id =  "+shopids[2]+"");
         sbuffer.append(")) day7 on day6.user_id=day7.user_id ");
 

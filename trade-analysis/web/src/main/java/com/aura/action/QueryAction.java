@@ -182,7 +182,6 @@ public class QueryAction extends BasicActionSupportImpl {
         String shopId = this.getRequest().getParameter("shopId");
         String startTime = this.getRequest().getParameter("startTime");
         String stopTime = this.getRequest().getParameter("endTime");
-        JSONObject object = new MerchantsTradeAnalysis().getShopView(shopId,startTime,stopTime);
-        JsonHelper.printBasicJsonObject(getResponse(), object);
+
     }
 }

@@ -76,11 +76,11 @@
                 pay.push(item.payTimes);
                 view.push(item.viewTime);
             })
-            var types = ["交易次数","浏览次数"]
+            var types = ["商家交易次数","商家浏览次数"]
             var datas = [pay,view];
             var option = {
                 title: {
-                    text: "口碑交易统计",
+                    text: "口碑交易统计（以天为单位）",
                     textStyle: {
                         color: '#ffffff'
                     }
@@ -176,7 +176,7 @@
             });
             var option = {
                 title : {
-                    text: "城市总体消费金额",
+                    text: "城市总体消费金额（TOP10）",
                     x:'left',
                     textStyle: {
                         color: '#ffffff'
