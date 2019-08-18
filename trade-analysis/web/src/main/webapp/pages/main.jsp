@@ -150,6 +150,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<img src="pages/images/streaming.png" width="250px" height="180px" title="历史账单查询-HBase" />
 		</a>
 	</div>
+	<div class="content marginTop">
+		<a href="pages/stream/main-all.jsp" target="_blank">
+			<img src="pages/images/streaming.png" width="250px" height="180px" title="dashboard" />
+		</a>
+	</div>
   	<script type="text/javascript">
   	var width = $(window).width();
   	var height = $(window).height();
