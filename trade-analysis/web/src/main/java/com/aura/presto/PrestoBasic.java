@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public abstract class PrestoBasic {
 
-    private static String presto_url = "jdbc:presto://192.168.88.129:8081";
+    private static String presto_url = "jdbc:presto://master:8081";
     private static String presto_user = "hadoopuser";
     private static String presto_passwd = "hadoopuser";
 
