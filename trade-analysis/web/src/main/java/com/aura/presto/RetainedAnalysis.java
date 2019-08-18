@@ -1,6 +1,7 @@
 
 package com.aura.presto;
 
+import com.aura.database.JDBCUtils;
 import com.aura.presto.PrestoToJDBCClient;
 
 import java.sql.Connection;
@@ -43,7 +44,7 @@ public class RetainedAnalysis extends PrestoToJDBCClient {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private String shopidstr = null;
     private String[] shopids = null;//平均日交易额最大的前 3 个商家
-    public RetainedAnalysis() {
+    /*public RetainedAnalysis() {
         this.shopidstr = getMaxPay();
         if(this.shopidstr != null && this.shopidstr.contains(",")){
             this.shopids = shopidstr.split(",");
@@ -51,7 +52,7 @@ public class RetainedAnalysis extends PrestoToJDBCClient {
             this.shopids = new String[3];
         }
 
-    }
+    }*/
     //分别计算7天的留存率
     public JSONObject CalculateRetention(String viewDate, Statement statement){
 
@@ -75,6 +76,13 @@ public class RetainedAnalysis extends PrestoToJDBCClient {
         afterday7 = getSpecifiedDayAfter(viewDate, 7);
         Map<String, String> result = new HashMap<>();
         StringBuffer sbuffer = new StringBuffer();
+        //日常消费最大的三家商店
+        shopidstr = getMaxShopIds(viewDate, statement);
+        if (shopidstr != null){
+            this.shopids = shopidstr.split(",");
+        }else{
+            this.shopids = new String[3];
+        }
         sbuffer.append(" select count(userview.user_id) as day0, ");
         sbuffer.append("count(day1.user_id) as day1, ");
         sbuffer.append("count(day2.user_id) as day2, ");
@@ -188,6 +196,30 @@ public class RetainedAnalysis extends PrestoToJDBCClient {
 
         }
         return jsonObject;
+    }
+
+
+    /*
+    计算日均消费最大的三家商铺
+     */
+    public String getMaxShopIds(String queryDate, Statement statement){
+        String sql = "select a.shop_id,substr(cast(a.pay_time as varchar),1,10) as paytime,sum(b.per_pay) as pay " +
+                " from user_pay_orc a join mysql.aura.shop_info b on a.shop_id=b.shop_id " +
+                " where substr(cast(a.pay_time as varchar),1,10)='"+queryDate+"' " +
+                " group by a.shop_id,substr(cast(a.pay_time as varchar),1,10) order by pay desc limit 3";
+        ResultSet rs = null;
+        String shopIds = "";
+        try {
+            rs = statement.executeQuery(sql);
+            while (rs.next()){
+                shopIds += rs.getString(1)+", ";
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return shopIds.length()>2?shopIds.substring(0, shopIds.length()-2):null;
+
     }
 
 
