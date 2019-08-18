@@ -4,6 +4,7 @@ import com.aura.basic.BasicServiceSupportImpl;
 import com.aura.dao.ShopInfoDao;
 import com.aura.model.*;
 import com.aura.model.result.CityConsume;
+import com.aura.model.result.MostViewShop;
 import com.aura.model.result.PopuShopTrade;
 import com.aura.model.result.ShopTradeView;
 import org.springframework.cache.annotation.Cacheable;
@@ -74,5 +75,10 @@ public class ShopInfoService extends BasicServiceSupportImpl{
     public List<PopuShopTrade> getPopuShopTrade() {
         List<PopuShopTrade> list = (List<PopuShopTrade>) shopInfoDao.selectList("common.shopInfo.getPopuShopTrade",null);
         return list;
+    }
+
+    public List<MostViewShop> getMostViewShop() {
+        List<MostViewShop> list = (List<MostViewShop>) shopInfoDao.selectList("common.shopInfo.getMostViewShop",null);
+        return  list;
     }
 }

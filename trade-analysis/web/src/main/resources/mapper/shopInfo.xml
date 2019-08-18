@@ -62,4 +62,8 @@
     <select id="getPopuShopTrade" resultType="com.aura.model.result.PopuShopTrade">
         select * from popu_shop_trade;
     </select>
+
+    <select id="getMostViewShop" resultType="com.aura.model.result.MostViewShop">
+        select * from most_view_shop;
+    </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
 import com.aura.model.*;
 import com.aura.model.result.CityConsume;
+import com.aura.model.result.MostViewShop;
 import com.aura.model.result.PopuShopTrade;
 import com.aura.model.result.ShopTradeView;
 import com.aura.service.ShopInfoService;
@@ -174,5 +175,13 @@ public class QueryAction extends BasicActionSupportImpl {
         String startTime = this.getRequest().getParameter("startTime");
         String stopTime = this.getRequest().getParameter("endTime");
 
+    }
+
+    /**
+     * 被浏览次数最多的商家，并输出城市及人均消费
+     */
+    public void getMostViewShop() {
+        List<MostViewShop> list = service.getMostViewShop();
+        JsonHelper.printBasicJsonList(getResponse(), list);
     }
 }
