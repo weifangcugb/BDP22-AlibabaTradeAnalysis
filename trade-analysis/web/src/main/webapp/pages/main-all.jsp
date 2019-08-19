@@ -177,7 +177,7 @@
 
     shopRankList();
     //定时刷新 定位毫秒
-    //setInterval(shopRankList, interval * 1000);
+    setInterval(shopRankList, interval * 1000);
 
 
     function province_ajaxQuery() {
@@ -261,7 +261,7 @@
 
     province_ajaxQuery();
     //定时任务 刷新地图
-    // setInterval(province_ajaxQuery, interval * 1000);
+    setInterval(province_ajaxQuery, interval * 1000);
 
     mid2Chart.on('click', function (params) {
         var seriesType = params.seriesType;

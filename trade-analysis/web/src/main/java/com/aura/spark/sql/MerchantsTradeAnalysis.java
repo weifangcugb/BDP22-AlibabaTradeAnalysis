@@ -153,7 +153,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
             }
         }*/
 
-        /*System.out.println("----------------5----------------");
+    /*    System.out.println("----------------5----------------");
         //找到被浏览次数最多的50个商家，并输出他们的城市以及人均消费，并选择合适的图表对结果进行可视化
         String viewSql = "select a.shopId,a.cityName,a.perPay,b.viewTimes from shop_info a join (select shop_id,count(*) as viewTimes from user_view group by shop_id order by count(*) desc limit 50) b " +
                 "on a.shopId = b.shop_id order by b.viewTimes desc";
