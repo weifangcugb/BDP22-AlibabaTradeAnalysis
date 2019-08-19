@@ -51,7 +51,10 @@
     <div id="left3" style="height: 33%;" class="chart-border"></div>
 </div>
 <div id="mid" style="width: 44%; height: 100%; float: left; margin-top: 2px;">
-    <div style="text-align: center; font-size: 20px; color: #dbfffa; line-height: 43px">XX商家流量分析系统</div>
+    <div>
+        <div style="text-align: center; font-size: 20px; color: #dbfffa; line-height: 43px">XX商家流量分析系统</div>
+        <div id="link" style="float:right; height: 40px" ><img src="images/arrow.jpg"></div>
+    </div>
     <div id="mid1" style="height: 35%;" class="chart-border"></div>
     <div id="mid2" style="height: 59%;" class="chart-border"></div>
 </div>
