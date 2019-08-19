@@ -4,6 +4,15 @@ public class MostViewShop {
     private Long shopId;
     private String cityName;
     private Long perPay;
+    private Long viewTimes;
+
+    public Long getViewTimes() {
+        return viewTimes;
+    }
+
+    public void setViewTimes(Long viewTimes) {
+        this.viewTimes = viewTimes;
+    }
 
     public Long getShopId() {
         return shopId;

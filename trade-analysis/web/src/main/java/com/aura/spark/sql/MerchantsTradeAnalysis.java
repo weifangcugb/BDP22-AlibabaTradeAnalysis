@@ -158,12 +158,13 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
         String viewSql = "select a.shopId,a.cityName,a.perPay,b.viewTimes from shop_info a join (select shop_id,count(*) as viewTimes from user_view group by shop_id order by count(*) desc limit 50) b " +
                 "on a.shopId = b.shop_id order by b.viewTimes desc";
         Dataset<Row> mostViewShopTop50 = spark.sql(viewSql);
+        mostViewShopTop50.printSchema();
         mostViewShopTop50.show(50);
         mostViewShopTop50.foreachPartition(rows -> {
             Connection connection = C3P0Utils.getConnection();
             rows.forEachRemaining(row -> {
                 try {
-                    JavaDBDao.saveMostViewShopTop50(connection, row.getLong(0), row.getString(1), Long.valueOf(row.getInt(2)));
+                    JavaDBDao.saveMostViewShopTop50(connection, row.getLong(0), row.getString(1), Long.valueOf(row.getInt(2)) ,row.getLong(3));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

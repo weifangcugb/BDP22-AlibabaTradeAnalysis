@@ -24,7 +24,6 @@
 
     <style type="text/css">
         body {
-            height: 100%;
             margin: 0 0 0 0;
             background-image: url('pages/images/4.jpg');
             background-attachment: fixed;
@@ -38,25 +37,26 @@
             height: 100%;
         }
         .chart-border{
-            border: 1px solid #babdc0
+            border: 1px solid #b0c0bf;
+            border-radius:10px;
         }
     </style>
 
 </head>
 
-<body>
+<body id="main">
 <div id="left" style="width: 28%; height: 100%; float: left; margin-top: 2px;">
-    <div id="left1" style="height: 33%;" class="chart-border"></div>
+    <div id="left1" style="height: 32%;" class="chart-border"></div>
     <div id="left2" style="height: 33%;" class="chart-border"></div>
     <div id="left3" style="height: 33%;" class="chart-border"></div>
 </div>
 <div id="mid" style="width: 44%; height: 100%; float: left; margin-top: 2px;">
-    <div style="text-align: center; font-size: 18px; color: #ffffff; line-height: 40px">商家流量分析系统</div>
+    <div style="text-align: center; font-size: 20px; color: #dbfffa; line-height: 43px">XX商家流量分析系统</div>
     <div id="mid1" style="height: 35%;" class="chart-border"></div>
-    <div id="mid2" style="height: 60%;" class="chart-border"></div>
+    <div id="mid2" style="height: 59%;" class="chart-border"></div>
 </div>
 <div id="right" style="width: 28%; height: 100%; float: right; margin-top: 2px;">
-    <div id="right1" style="height: 33%;" class="chart-border"></div>
+    <div id="right1" style="height: 32%;" class="chart-border"></div>
     <div id="right2" style="height: 33%;" class="chart-border"></div>
     <div id="right3" style="height: 33%;" class="chart-border"></div>
 </div>
@@ -243,7 +243,7 @@
                         mapLocation: {
                             x: 'left'
                         },
-                        zoom: 1.1,
+                        zoom: 1.2,
                         selectedMode: 'multiple',
                         itemStyle: {
                             normal: {label: {show: true}, borderColor: "#389BB7"},
@@ -470,8 +470,8 @@
                 },
                 grid: {
                     top: 30,
-                    left: 40,
-                    right: 20,
+                    left: 50,
+                    right: 40,
                     bottom: 5,
                     containLabel: true
                 },
@@ -486,7 +486,7 @@
                     splitLine: {show: false},
                     axisLine: {show: false, lineStyle: {color: '#ddd'}},
                     axisTick: {show: false, lineStyle: {color: '#ddd'}},
-                    axisLabel: {inside: true,interval: 0, textStyle: {fontSize: 15,color: '#ffffff'}},
+                    axisLabel: {inside: true,interval: 0, textStyle: {fontSize: 13,color: '#ffffff'}},
                     zlevel: 3,
                     data: titles
                 },
@@ -498,9 +498,7 @@
                             normal: {
                                 color: function(params) {
                                     var colorList = [
-                                        '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
-                                        '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
-                                        '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                                        '#FE8463','#9BCA63','#ADCFFF','#86fa9d','#F3A43B','#60C0DD'
                                     ];
                                     if(params.dataIndex < 0) {
                                         return colorList[0];
@@ -570,7 +568,7 @@
                 data:['直达','营销广告','搜索引擎','邮件营销','联盟广告','视频广告','百度','谷歌','必应','其他']
             },
             toolbox: {
-                show : true,
+                show : false,
                 feature : {
                     mark : {show: true},
                     dataView : {show: true, readOnly: false},
@@ -652,9 +650,16 @@
                 trigger: 'item',
                 formatter: "商家{b} : 交易额{c}"
             },
-            color: ['#FF0000', '#FFFF00', '#33ff00', '#33ffff', '#0000ff'],
+            grid: {
+                top: 20,
+                left: 5,
+                right: 15,
+                bottom: 10,
+                containLabel: true
+            },
+            color: ['#ffa377', '#FFFF00', '#33ff00', '#33ffff', '#6DFFA7'],
             toolbox: {
-                show : true,
+                show : false,
                 feature : {
                     mark : {show: true},
                     dataView : {show: true, readOnly: false},
@@ -670,13 +675,14 @@
                     width: '80%',
                     left: '10%',
                     // height: {totalHeight} - y - y2,
+                    height: '80%',
                     sort : 'descending', // 'ascending', 'descending'
                     gap : 8,
                     itemStyle: {
                         normal: {
                             // color: 各异,
                             //borderColor: '#fff',f
-                            opacity: 0.8,
+                            opacity: 0.7,
                             borderWidth: 1,
                             label: {
                                 show: true,
@@ -723,14 +729,17 @@
         $.get({url: "common/query_getMostViewShop"}).done(function (data) {
             var shops = [];
             var pays = [];
+            var views = [];
+            var types = ["浏览次数","平均消费"]
             data.map(function (item) {
                 shops.push(item.shopId);
                 pays.push(item.perPay);
+                views.push(item.viewTimes/1000);
             });
             var option = {
                 title: {
-                    text: "商家被浏览次数",
-                    x: 'center',
+                    text: "商家浏览量(K)",
+                    x: 'left',
                     textStyle: {
                         color: '#ffffff',
                         fontSize: 14,
@@ -738,17 +747,16 @@
                     }
                 },
                 tooltip : {
-                    trigger: 'axis',
-                    formatter: "商家{b} : 人均消费{c}"
+                    trigger: 'axis'
                 },
-               /* legend: {
+                legend: {
                     textStyle: {
                         color: '#ffffff'
                     },
                     x : 'right',
                     y : 'top',
                     data: types
-                },*/
+                },
                 grid: {
                     top: 40,
                     left: 5,
@@ -774,7 +782,7 @@
                 ],
                 series : [
                     {
-                        name: '商家浏览量',
+                        name:types[0],
                         type:'line',
                         symbol: 'emptyTriangle',
                         symbolSize: 10,
@@ -786,14 +794,37 @@
                         },
                         itemStyle: {
                             normal: {
-                                color: '#de4c4f'/*,
+                                color: '#55deb9',
                                 lineStyle: {
-                                    width: 2,
+                                    width: 3,
                                     type: 'dashed'
-                                }*/
+                                }
                             }
                         },
-                        data:pays
+                        data: views
+                    },
+                    {
+                        name:types[1],
+                        type:'line',
+                        symbol: 'circle',
+                        symbolSize: 10,
+                        smooth: true,
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#eee761',
+                                lineStyle:{
+                                    width:3,
+                                    type:'dashed'  //'dotted'虚线 'solid'实线
+                                }
+                            }
+                        },
+                        data: pays
                     }
                 ]
             };

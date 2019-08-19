@@ -38,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <meta name="msapplication-TileColor" content="#0e90d2">
     
     <script type="text/javascript">
-    window.location.href = "pages/main.jsp";
+    window.location.href = "pages/main-all.jsp";
     </script>
 
   </head>

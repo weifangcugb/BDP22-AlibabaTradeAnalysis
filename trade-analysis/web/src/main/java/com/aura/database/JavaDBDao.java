@@ -35,7 +35,7 @@ public class JavaDBDao {
 
     private static String insertShopTradeView = "insert into shop_trade_view values(?,?,?)";
 
-    private static String saveMostViewShopTop50Sql = "insert into most_view_shop values(?,?,?)";
+    private static String saveMostViewShopTop50Sql = "insert into most_view_shop values(?,?,?,?)";
 
     private static String saveRetainedAnalysisSql = "insert into retained_analysis values(?,?,?,?)";
 
@@ -89,8 +89,8 @@ public class JavaDBDao {
         execute(conn, savePopulShopSql,shopId, cate, grade);
     }
 
-    public static void saveMostViewShopTop50(Connection conn, Long shopId, String  city, Long pay) throws SQLException {
-        execute(conn, saveMostViewShopTop50Sql,shopId, city, pay);
+    public static void saveMostViewShopTop50(Connection conn, Long shopId, String  city, Long pay, Long viewTimes) throws SQLException {
+        execute(conn, saveMostViewShopTop50Sql,shopId, city, pay, viewTimes);
     }
 
     public static void insertOrUpdateM(Connection conn, int shopId, int tradeCount) throws SQLException {
