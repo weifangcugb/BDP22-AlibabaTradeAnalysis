@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 定时任务
  */
-@Component
+//@Component
 public class AnnotationQuartz extends HBaseBasic {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

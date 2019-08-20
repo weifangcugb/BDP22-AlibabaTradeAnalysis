@@ -222,14 +222,21 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${project.build.directory}/lib</directory>
-                            <targetPath>WEB-INF/lib</targetPath>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <targetPath>WEB-INF</targetPath>
                             <includes>
                                 <include>**/*.*</include>
                             </includes>
                         </resource>
                     </webResources>
                     <warName>AuraWeb</warName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>

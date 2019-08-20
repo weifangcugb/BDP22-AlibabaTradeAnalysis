@@ -41,155 +41,166 @@
             -moz-background-size: cover;
             -webkit-background-size: cover;
         }
+        .chart-border{
+            border: 1px solid #b0c0bf;
+            border-radius:10px;
+            margin-top: 2px;
+        }
     </style>
 </head>
-<body style="width: 80%;margin-left: 10%">
-<div class="mainhead fl" id="head">
-    <h4 class="fl">留存率查询：</h4>
-</div>
-<div id="wrapper">
-    <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
-        <div class="panel" style="padding: 5px 0px;">
-            <div class="row">
-                <div class="col-md-4">
-                    <label style="text-align:right;padding-top:5px;width: 30%;">查询日期：</label>
-                    <div class="input-daterange input-group col-xs-4" style="float:right;width: 66.5%;" id="datepicker_retained">
-                        <input type="text" class="input-sm form-control" name="start" id="date_input_retained"
-                               readonly="readonly"/>
+<body class="" style="width: 80%;margin-left: 10%">
+<div id="retained" class="chart-border">
+    <div class="mainhead fl" id="head">
+        <h4 class="fl">留存率查询：</h4>
+    </div>
+    <div id="wrapper">
+        <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+            <div class="panel" style="padding: 5px 0px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label style="text-align:right;padding-top:5px;width: 30%;">查询日期：</label>
+                        <div class="input-daterange input-group col-xs-4" style="float:right;width: 66.5%;" id="datepicker_retained">
+                            <input type="text" class="input-sm form-control" name="start" id="date_input_retained"
+                                   readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="btn btn-primary col-xs-4" id="search_btn_retained">查询</div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="btn btn-primary col-xs-4" id="search_btn_retained">查询</div>
+            </div>
+            <div class="panel" style="padding: 20px 0px;">
+                <div class="section-data" style="padding: 0px 5px;">
+                    <table data-row-style="rowStyle"
+                           data-show-export="true"
+                           data-pagination="true"
+                           data-thead-classes="thead-light"
+                           data-striped="true"
+                           data-sort-name="createTime"
+                           data-sort-order="desc"
+                           data-sort-stable="true"
+                           data-search="true"
+                           data-pagination-successively-size="1"
+                           id="show_table_retained">
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="panel" style="padding: 20px 0px;">
-            <div class="section-data" style="padding: 0px 5px;">
-                <table data-row-style="rowStyle"
-                       data-show-export="true"
-                       data-pagination="true"
-                       data-thead-classes="thead-light"
-                       data-striped="true"
-                       data-sort-name="createTime"
-                       data-sort-order="desc"
-                       data-sort-stable="true"
-                       data-search="true"
-                       data-pagination-successively-size="1"
-                       id="show_table_retained">
-                </table>
+    </div>
+</div>
+<div id="history" class="chart-border">
+    <div class="mainhead fl" id="head">
+        <h4 class="fl">历史账单查询：</h4>
+    </div>
+    <div id="wrapper">
+        <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+            <div style="padding: 5px 0px;margin-left: 10%;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
+                        <div class="col-xs-3" style="float:right;width: 60%;">
+                            <input type="text" class="input-sm form-control" id="userId" placeholder="请输入" required>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div style="display: none;margin-top: 5px" id="tips">ID不能为空</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
+                        <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="datepicker">
+                            <input type="text" class="input-sm form-control" name="start" id="date_input"
+                                   readonly="readonly"/>
+                            <span class="input-group-addon">to</span>
+                            <input type="text" class="input-sm form-control" name="end" id="date_input_end"
+                                   readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="btn btn-primary col-xs-4" id="search_btn">查询</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 5px 0px;margin-left: 10%;margin-top: 18px">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
+                        <div class="col-xs-4" style="float:right;width: 60%;">
+                            <input type="text" class="input-sm form-control" id="viewuserid" placeholder="请输入" required>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div style="display: none;margin-top: 5px" id="viewtips">ID均不能为空</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="text-align: left; padding-top: 5px;width: 30%;padding-left: 10px">商家ID: </label>
+                        <div class="col-xs-2" style="float:right;width: 60%;">
+                            <input type="text" class="input-sm form-control" id="viewshopid" placeholder="请输入" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="btn btn-primary col-xs-4" id="view_btn">支付</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel" style="padding: 20px 0px;">
+                <div class="section-data" style="padding: 0px 5px;">
+                    <table data-row-style="rowStyle"
+                           data-show-export="true"
+                           data-pagination="true"
+                           data-thead-classes="thead-light"
+                           data-striped="true"
+                           data-sort-name="createTime"
+                           data-sort-order="desc"
+                           data-sort-stable="true"
+                           data-search="true"
+                           data-pagination-successively-size="1"
+                           id="show_table">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="shopview" class="chart-border">
+    <div class="mainhead fl" id="head">
+        <h4 class="fl">商家浏览量查询：</h4>
+    </div>
+    <div id="wrapper">
+        <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+            <div style="padding: 5px 0px;margin-left: 10%;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label style="text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
+                        <div class="col-xs-3" style="float:right;width: 60%;">
+                            <input type="text" class="input-sm form-control" id="shop_Id" placeholder="请输入" required>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div style="display: none;margin-top: 5px" id="shop_tips">ID不能为空</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
+                        <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="shop_datepicker">
+                            <input type="text" class="input-sm form-control" name="start" id="shop_date_input"
+                                   readonly="readonly"/>
+                            <span class="input-group-addon">to</span>
+                            <input type="text" class="input-sm form-control" name="end" id="shop_date_input_end"
+                                   readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="btn btn-primary col-xs-4" id="shop_view_btn">查询</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel" style="padding: 20px 0px;" id="shop_view">
+
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="mainhead fl" id="head">
-    <h4 class="fl">历史账单查询：</h4>
-</div>
-<div id="wrapper">
-    <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
-        <div style="padding: 5px 0px;margin-left: 10%;">
-            <div class="row">
-                <div class="col-md-4">
-                    <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
-                    <div class="col-xs-3" style="float:right;width: 60%;">
-                        <input type="text" class="input-sm form-control" id="userId" placeholder="请输入" required>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <div style="display: none;margin-top: 5px" id="tips">ID不能为空</div>
-                </div>
-                <div class="col-md-4">
-                    <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
-                    <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="datepicker">
-                        <input type="text" class="input-sm form-control" name="start" id="date_input"
-                               readonly="readonly"/>
-                        <span class="input-group-addon">to</span>
-                        <input type="text" class="input-sm form-control" name="end" id="date_input_end"
-                               readonly="readonly"/>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="btn btn-primary col-xs-4" id="search_btn">查询</div>
-                </div>
-            </div>
-        </div>
-        <div style="padding: 5px 0px;margin-left: 10%;margin-top: 18px">
-            <div class="row">
-                <div class="col-md-4">
-                    <label style="text-align: right; padding-top: 5px;width: 30%;">用户ID: </label>
-                    <div class="col-xs-4" style="float:right;width: 60%;">
-                        <input type="text" class="input-sm form-control" id="viewuserid" placeholder="请输入" required>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <div style="display: none;margin-top: 5px" id="viewtips">ID均不能为空</div>
-                </div>
-                <div class="col-md-4">
-                    <label style="text-align: left; padding-top: 5px;width: 30%;padding-left: 10px">商家ID: </label>
-                    <div class="col-xs-2" style="float:right;width: 60%;">
-                        <input type="text" class="input-sm form-control" id="viewshopid" placeholder="请输入" required>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="btn btn-primary col-xs-4" id="view_btn">支付</div>
-                </div>
-            </div>
-        </div>
-        <div class="panel" style="padding: 20px 0px;">
-            <div class="section-data" style="padding: 0px 5px;">
-                <table data-row-style="rowStyle"
-                       data-show-export="true"
-                       data-pagination="true"
-                       data-thead-classes="thead-light"
-                       data-striped="true"
-                       data-sort-name="createTime"
-                       data-sort-order="desc"
-                       data-sort-stable="true"
-                       data-search="true"
-                       data-pagination-successively-size="1"
-                       id="show_table">
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="mainhead fl" id="head">
-    <h4 class="fl">商家浏览量查询：</h4>
-</div>
-<div id="wrapper">
-    <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
-        <div style="padding: 5px 0px;margin-left: 10%;">
-            <div class="row">
-                <div class="col-md-4">
-                    <label style="text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
-                    <div class="col-xs-3" style="float:right;width: 60%;">
-                        <input type="text" class="input-sm form-control" id="shop_Id" placeholder="请输入" required>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <div style="display: none;margin-top: 5px" id="shop_tips">ID不能为空</div>
-                </div>
-                <div class="col-md-4">
-                    <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
-                    <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="shop_datepicker">
-                        <input type="text" class="input-sm form-control" name="start" id="shop_date_input"
-                               readonly="readonly"/>
-                        <span class="input-group-addon">to</span>
-                        <input type="text" class="input-sm form-control" name="end" id="shop_date_input_end"
-                               readonly="readonly"/>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="btn btn-primary col-xs-4" id="shop_view_btn">查询</div>
-                </div>
-            </div>
-        </div>
-        <div class="panel" style="padding: 20px 0px;" id="shop_view">
-
-        </div>
-    </div>
-</div>
 </body>
 
 <script>

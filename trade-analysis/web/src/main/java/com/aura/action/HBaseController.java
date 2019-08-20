@@ -18,8 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/hbase")
+//@RestController
+//@RequestMapping("/api/hbase")
 public class HBaseController {
 
     @Resource

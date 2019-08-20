@@ -47,13 +47,13 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
 
         ///平均日交易额最大的前10个商家，并输出他们各自的交易额 TextFile -> RDD, Dataframe
         //1.Use Java RDD
-     /*   Map<String, Long> top10TradePerDay = new HashMap<>();
+        Map<String, Long> top10TradePerDay = new HashMap<>();
         JavaPairRDD<Long, String> userPayPair = userPayJavaRDD.mapToPair(line -> {
             return new Tuple2<>(line.getShopId(), line.getPayTime());
         });
         JavaPairRDD<Long, Integer> shopInfoPair = shopInfoJavaRDD.mapToPair(line -> {
             return new Tuple2<>(line.getShopId(), line.getPerPay());
-        });*/
+        });
 
         //2-1.Use SparkSQL
         System.out.println("----------------1----------------");
@@ -61,7 +61,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
         userPayDF.createOrReplaceTempView("user_pay");
         userViewDF.createOrReplaceTempView("user_view");
 
-        /*String sql = "select aa.shopId,CAST(bb.totalPay*1.0/aa.totalTimes AS decimal(10,2)) as average from " +
+        String sql = "select aa.shopId,CAST(bb.totalPay*1.0/aa.totalTimes AS decimal(10,2)) as average from " +
                 "(select shopId,count(payDate) as totalTimes from (select shopId,substr(payTime,1,10) as payDate from user_pay group by shopId,substr(payTime,1,10)) group by shopId) aa" +
                 " join (select a.shopId,b.perPay*a.tradeTimes as totalPay from (select shopId,count(*) as tradeTimes from user_pay group by shopId) a join shop_info b on a.shopId = b.shopId) bb" +
                 " on aa.shopId = bb.shopId order by CAST(bb.totalPay*1.0/aa.totalTimes AS decimal(10,2)) desc limit 10";
@@ -86,8 +86,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                 .groupBy(col("payDate"), col("shopId")).agg(sum(col("perPay")).alias("totalpay"))
                 .groupBy("shopId").agg(sum("totalpay").alias("totalPay")).orderBy(desc("totalPay"));
 //        joinDf.show();
-*/
-        /*System.out.println("----------------2----------------");
+        System.out.println("----------------2----------------");
         //输出北京、上海、广州和深圳四个城市最受欢迎的5家奶茶商店和中式快餐编号
         Dataset<Row> consumeDF = userPayDF.groupBy(col("shopId")).agg(count("shopId").alias("shopPayCount"))
                 .join(shopInfoDF, "shopId").withColumn("totalPay", col("shopPayCount").multiply(col("perPay")))
@@ -125,15 +124,16 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                     e.printStackTrace();
                 }
             });
-        });*/
+        });
 
 //        System.out.println("----------------3----------------");
         //对于平均日交易额最大的前3个商家进行漏斗分析，以浏览行为作为分析目标，输出2016.10.01~2016.10.31共31天的留存率
-       /* Dataset<Row> viewDF = spark.sql("select user_id, shop_id , substr(time_stamp,1,10) as view_date from user_view where substr(time_stamp,1,10) <= '2016-10-31' " +
+        Dataset<Row> viewDF = spark.sql("select user_id, shop_id , substr(time_stamp,1,10) as view_date from user_view where substr(time_stamp,1,10) <= '2016-10-31' " +
                 "and substr(time_stamp,1,10) >= '2016-10-01' and (shop_id = '65')");
         viewDF.createOrReplaceTempView("reten_user_view");
         int start =1, end =31; String prefix = "2016-10-";
         List<String> shopList = Arrays.asList("65","650","1302");
+        Connection connection = C3P0Utils.getConnection();
         for(String shopId : shopList) {
             for(int day = start;day <= end; day++) {
                 Dataset<Row> c1 = viewDF.filter(col("view_date").equalTo(prefix+day)).select(col("user_id")).distinct();
@@ -151,9 +151,9 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                     }
                 }
             }
-        }*/
+        }
 
-    /*    System.out.println("----------------5----------------");
+        System.out.println("----------------5----------------");
         //找到被浏览次数最多的50个商家，并输出他们的城市以及人均消费，并选择合适的图表对结果进行可视化
         String viewSql = "select a.shopId,a.cityName,a.perPay,b.viewTimes from shop_info a join (select shop_id,count(*) as viewTimes from user_view group by shop_id order by count(*) desc limit 50) b " +
                 "on a.shopId = b.shop_id order by b.viewTimes desc";
@@ -161,7 +161,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
         mostViewShopTop50.printSchema();
         mostViewShopTop50.show(50);
         mostViewShopTop50.foreachPartition(rows -> {
-            Connection connection = C3P0Utils.getConnection();
+//            Connection connection = C3P0Utils.getConnection();
             rows.forEachRemaining(row -> {
                 try {
                     JavaDBDao.saveMostViewShopTop50(connection, row.getLong(0), row.getString(1), Long.valueOf(row.getInt(2)) ,row.getLong(3));
@@ -169,9 +169,9 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                     e.printStackTrace();
                 }
             });
-        });*/
+        });
 
-        /*System.out.println("----------------4----------------");
+        System.out.println("----------------4----------------");
         String shopId = "1197", startTime = "2016-01-01", endTime = "2016-12-31";
         Dataset<Row> userViewDF1 = userViewDF.filter(col("shop_id").equalTo(shopId))
                 .withColumn("view_time", col("time_stamp").substr(1, 10))
@@ -208,7 +208,7 @@ public class MerchantsTradeAnalysis extends BaseTradeAnalysis {
                     e.printStackTrace();
                 }
             });
-        });*/
+        });
     }
 
     //Main For Test

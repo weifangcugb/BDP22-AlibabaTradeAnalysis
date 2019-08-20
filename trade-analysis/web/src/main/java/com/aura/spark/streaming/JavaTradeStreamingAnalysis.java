@@ -42,6 +42,7 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
     private ShopInfoService shopInfoService;
 
     public JavaTradeStreamingAnalysis() {
+        System.out.println("--------------------------------------------------------------------");
         config = AuraConfig.getRoot();
         SparkConf conf = new SparkConf();
         conf.setMaster("local[2]").setAppName("Trade Streaming Analysis");
