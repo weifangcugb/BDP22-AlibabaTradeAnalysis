@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-@Service("streamingAnalysis")
+//@Service("streamingAnalysis")
 public class JavaTradeStreamingAnalysis extends HBaseBasic {
 
     public static final String TABLE_INFO = "info";
@@ -42,7 +42,7 @@ public class JavaTradeStreamingAnalysis extends HBaseBasic {
     private ShopInfoService shopInfoService;
 
     public JavaTradeStreamingAnalysis() {
-        System.out.println("--------------------------------------------------------------------");
+        System.out.println("-------JavaTradeStreamingAnalysis-------");
         config = AuraConfig.getRoot();
         SparkConf conf = new SparkConf();
         conf.setMaster("local[2]").setAppName("Trade Streaming Analysis");

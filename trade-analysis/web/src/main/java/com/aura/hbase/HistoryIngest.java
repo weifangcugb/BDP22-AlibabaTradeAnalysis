@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 
-@Controller("historyIngest")
+//@Controller("historyIngest")
 public class HistoryIngest extends Ingest {
 
     private static final String user_pay = "hdfs://master:9000/trade-analysis/user_pay/user_pay.txt";
