@@ -9,7 +9,7 @@
 <head>
     <base href="<%=basePath%>">
     <meta charset="UTF-8"/>
-    <title>历史账单查询-HBase</title>
+    <title>交互查询</title>
     <link rel="stylesheet" href="pages/css/bootstrap.min.css">
     <link rel="stylesheet" href="pages/css/search.css">
     <link rel="stylesheet" href="pages/css/bootstrap-datepicker3.css"/>
@@ -194,6 +194,44 @@
                 </div>
             </div>
             <div class="panel" style="padding: 20px 0px;" id="shop_view">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="shoprecom" class="chart-border">
+    <div class="mainhead fl" id="head">
+        <h4 class="fl">用户画像-商家推荐：</h4>
+    </div>
+    <div id="wrapper">
+        <div class="container-fluid" style="padding-right: 50px;padding-left: 50px;">
+           <%-- <div style="padding: 5px 0px;margin-left: 10%;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label style="text-align: right; padding-top: 5px;width: 30%;">商家ID: </label>
+                        <div class="col-xs-3" style="float:right;width: 60%;">
+                            <input type="text" class="input-sm form-control" id="shop_Id" placeholder="请输入" required>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div style="display: none;margin-top: 5px" id="shop_tips">ID不能为空</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="text-align:left;padding-top:5px;width: 30%;">查询时间：</label>
+                        <div class="input-daterange input-group col-xs-2" style="float:right;width: 66%;" id="shop_datepicker">
+                            <input type="text" class="input-sm form-control" name="start" id="shop_date_input"
+                                   readonly="readonly"/>
+                            <span class="input-group-addon">to</span>
+                            <input type="text" class="input-sm form-control" name="end" id="shop_date_input_end"
+                                   readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="btn btn-primary col-xs-4" id="shop_view_btn">查询</div>
+                    </div>
+                </div>
+            </div>--%>
+            <div class="panel" style="padding: 20px 0px;" id="shop_recommend">
 
             </div>
         </div>

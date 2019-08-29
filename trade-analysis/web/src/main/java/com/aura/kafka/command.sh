@@ -12,4 +12,4 @@ bin/kafka-topics.sh --create --zookeeper master:2181 --replication-factor 1 --pa
 bin/kafka-topics.sh --list --zookeeper master:2181
 
 # Consumer
-bin/kafka-console-consumer.sh --zookeeper master:2181 --from-beginning --topic user_pay --max-messages 10
+bin/kafka-console-consumer.sh --zookeeper master:2181 --from-beginning --topic user_pay

@@ -29,7 +29,7 @@ public class JavaKafkaProducer
     {
         Properties props = getConfig();
         Producer<String, String> producer = new KafkaProducer(props);
-        String userPayFile = "hdfs://master:9000/trade-analysis/user_pay/user_pay.txt";
+        String userPayFile = "trade-analysis/web/data/user_pay.txt";
         File file = new File(userPayFile);
         BufferedInputStream fis = null;
         BufferedReader reader = null;// 用10M的缓冲读取文本文件
@@ -49,7 +49,7 @@ public class JavaKafkaProducer
                 //topic为user_pay, user_id为key，shop_id+”,”+time_stamp为value
                 producer.send(new ProducerRecord<String, String>("user_pay", attr[0], attr[1]+","+attr[2]));
                 System.out.println(line);
-                Thread.sleep(100); //单位：毫秒
+                Thread.sleep(1000); //单位：毫秒
             }
         } catch (IOException e) {
             e.printStackTrace();

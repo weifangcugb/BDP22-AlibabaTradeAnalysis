@@ -27,7 +27,7 @@ public class AnnotationQuartz extends HBaseBasic {
 
 
     //汇总HBase中存储的SparkStreaming实时信息进MySQL，以便可视化
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0/8 * * * * ?")
     public void HbaseInfoCompact() throws IOException, SQLException {
         logger.info("scheduled task execute");
 

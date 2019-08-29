@@ -2,16 +2,24 @@ package com.aura.presto;
 
 import com.aura.database.C3P0Utils;
 import com.aura.database.JavaDBDao;
+import com.aura.model.ShopInfo;
+import com.aura.service.ShopInfoService;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//@Service
 public class PrestoQuery extends PrestoBasic {
 
     private static Connection mysql = C3P0Utils.getConnection();
+
+    @Resource
+    ShopInfoService service;
 
 
     /**
@@ -27,8 +35,6 @@ public class PrestoQuery extends PrestoBasic {
         }
         rs.close();
         conn.close();
-
-
     }
 
     /**
@@ -64,6 +70,29 @@ public class PrestoQuery extends PrestoBasic {
         }
         rs.close();
         conn.close();
+    }
+
+    /**
+     * 用户推荐：经常浏览的商家所在城市、二级分类，找出最受欢迎的商家推荐
+     */
+    public String shopRecommendation(String shopId) throws SQLException {
+        ShopInfo shop = service.getShopInfoById(Integer.valueOf(shopId));
+        String city = shop.getCityName();
+        String cate2 = shop.getCate2Name();
+        Connection conn = getConnection();
+        Statement statement = conn.createStatement();
+        String sql = "select  b.shop_id, count(*) from hive.default.user_pay_orc a join mysql.aura.shop_info b on a.shop_id = b.shop_id " +
+                "where b.city_name = '" + city + "' and b.cate_2_name = '" + cate2 + "' and b.shop_id != "+ shop.getShopId() + " group by b.shop_id order by count(*) desc";
+        ResultSet rs = statement.executeQuery(sql);
+        String recomShopId = null;
+        while (rs.next()) {
+            System.out.println(new String(rs.getString(1).getBytes()));
+            System.out.println(rs.getLong(2));
+            recomShopId = new String(rs.getString(1).getBytes());
+        }
+        rs.close();
+        conn.close();
+        return recomShopId;
     }
 
     public static void main(String[] args) throws SQLException, UnsupportedEncodingException {

@@ -6,8 +6,8 @@
         <property name="jdbcUrl">jdbc:mysql://39.105.196.194:3306/aura</property>
         <property name="user">root</property>
         <property name="password">FWfw-1992</property>
-        <property name="initialPoolSize">5</property>
-        <property name="maxPoolSize">50</property>
+        <property name="initialPoolSize">10</property>
+        <property name="maxPoolSize">120</property>
     </default-config>
 
     <named-config name="itclass">

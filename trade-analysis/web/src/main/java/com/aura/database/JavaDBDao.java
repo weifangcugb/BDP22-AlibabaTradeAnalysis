@@ -21,13 +21,15 @@ public class JavaDBDao {
     private static String savePopulShopSql =
             "insert into popul_shop values(?,?,?,now())";
 
-    private static String insertShopTrade = "insert into merchant_trade values(?,?,now())";
+    private static String insertShopTrade = "insert into merchant_trade_real(shop_id,trade_count,update_time) values(?,?,now()) " +
+            "on DUPLICATE KEY UPDATE trade_count=VALUES(trade_count),update_time = now() ";
 
-    private static String deleteShopTrade = "delete from merchant_trade where shop_id = ?";
+    private static String deleteShopTrade = "delete from merchant_trade_real where shop_id = ?";
 
-    private static String insertCityTrade = "insert into city_trade(city_name,trade_count,update_time) values(?,?,now())";
+    private static String insertCityTrade = "insert into city_trade_real(city_name,trade_count,update_time) values(?,?,now()) " +
+            "on DUPLICATE KEY UPDATE trade_count=VALUES(trade_count),update_time = now()";
 
-    private static String deleteCityTrade = "delete from city_trade where city_name = ?";
+    private static String deleteCityTrade = "delete from city_trade_real where city_name = ?";
 
     private static String insertCityConsume = "insert into city_consume values(?,?,now())";
 
@@ -94,12 +96,12 @@ public class JavaDBDao {
     }
 
     public static void insertOrUpdateM(Connection conn, int shopId, int tradeCount) throws SQLException {
-        execute(conn, deleteShopTrade, shopId);
+        //execute(conn, deleteShopTrade, shopId);
         execute(conn,insertShopTrade,shopId,tradeCount);
     }
 
     public static void insertOrUpdateC(Connection conn, String cityName, int tradeCount) throws SQLException {
-        execute(conn, deleteCityTrade, cityName);
+        //execute(conn, deleteCityTrade, cityName);
         execute(conn,insertCityTrade,cityName,tradeCount);
     }
 

@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
-@Service("prestoToJDBCClient")
+//@Service("prestoToJDBCClient")
 public abstract class PrestoToJDBCClient {
     private final static String catalog = "hive";
     //获取链接

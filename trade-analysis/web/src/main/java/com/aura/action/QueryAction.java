@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aura.basic.BasicActionSupportImpl;
 import com.aura.hbase.HistoryIngest;
 import com.aura.hbase.Ingest;
+import com.aura.kafka.JavaKafkaProducer;
 import com.aura.model.*;
 import com.aura.model.result.CityConsume;
 import com.aura.model.result.MostViewShop;
@@ -18,6 +19,9 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
@@ -25,9 +29,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+
+import static com.aura.hbase.HistoryIngest.QUALIFIER_NAME_SHOPID;
+import static com.aura.hbase.Ingest.column_family_cf1;
 
 @Controller("queryAction")
 public class QueryAction extends BasicActionSupportImpl {
@@ -83,6 +92,38 @@ public class QueryAction extends BasicActionSupportImpl {
     }
 
     /**
+     * 用户推荐系统
+     */
+    public void shopRecommendation() throws IOException {
+        List<Object> resList = new ArrayList<>();
+        //establish the connection to the cluster.
+        Connection connection = ConnectionFactory.createConnection(Ingest.getHbaseConf());
+        //retrieve a handler to the target table
+        Table table = connection.getTable(TableName.valueOf("user_shop"));
+        Scan scan = new Scan();
+        scan.setCaching(1000);
+        //get result
+        ResultScanner rs = table.getScanner(scan);
+        rs.iterator().forEachRemaining(res -> {
+            JSONObject jsonObject = new JSONObject();
+            for (KeyValue kv : res.raw()) {
+                try {
+                    String userId = new String(res.getRow(), "utf-8");
+                    String shopId = new String(kv.getQualifier(), "utf-8");
+                    String recomShopId = new String(kv.getValue(), "utf-8");
+                    ShopInfo info = service.getShopInfoById(Integer.valueOf(recomShopId));
+                    jsonObject.put("userId", userId);
+                    jsonObject.put("recomShop", info);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            resList.add(jsonObject);
+        });
+        JsonHelper.printBasicJsonList(getResponse(), resList);
+    }
+
+    /**
      * 查询平均日交易额最大的前10个商家
      */
     public void getTradeAccount() {
@@ -128,9 +169,12 @@ public class QueryAction extends BasicActionSupportImpl {
      * 更新浏览支付记录,写入文件，实际中可能会同时入库和发送至消息队列
      */
     public void submitTrade() {
-        String userId = this.getRequest().getParameter("userId");
-        String shopId = this.getRequest().getParameter("shopId");
-        String date = new Date().toString();
+        String userId = this.getRequest().getParameter("userid");
+        String shopId = this.getRequest().getParameter("shopid");
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHH");
+        String nowdate = sf.format(date);
+        //1.写入文件系统
         try {
             String content = userId+","+shopId+","+ date;
             FileWriter writerPay = new FileWriter("trade-analysis\\web\\data\\user_pay.txt", true);
@@ -140,6 +184,24 @@ public class QueryAction extends BasicActionSupportImpl {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //2.写入Kafka的Topic中
+        Properties props = new JavaKafkaProducer().getConfig();
+        Producer<String, String> producer = new KafkaProducer(props);
+        //topic为user_pay, user_id为key，shop_id+”,”+time_stamp为value
+        producer.send(new ProducerRecord<String, String>("user_pay", userId, shopId+","+nowdate));
+        //3.写入HBase历史账单表
+        Connection connection = null;
+        try {
+           connection  = ConnectionFactory.createConnection(Ingest.getHbaseConf());
+            Table table = connection.getTable(TableName.valueOf(Ingest.table_name));
+            String rowkey = HistoryIngest.userIdCompletion(userId) + HistoryIngest.removeLineAndSpace(nowdate);
+            Put put = new Put(Bytes.toBytes(rowkey));
+            put.addColumn(Bytes.toBytes(column_family_cf1), Bytes.toBytes(QUALIFIER_NAME_SHOPID), Bytes.toBytes(shopId));
+            table.put(put);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         JsonHelper.printBasicJsonList(getResponse(), new ArrayList<>());
     }
 
@@ -183,5 +245,10 @@ public class QueryAction extends BasicActionSupportImpl {
     public void getMostViewShop() {
         List<MostViewShop> list = service.getMostViewShop();
         JsonHelper.printBasicJsonList(getResponse(), list);
+    }
+
+    public static void main(String[] args) throws IOException {
+        QueryAction action = new QueryAction();
+        action.shopRecommendation();
     }
 }

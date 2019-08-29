@@ -38,7 +38,18 @@
     </select>
 
     <select id="getMerchantTrade" resultType="com.aura.model.MerchantTrade">
-        select * from (SELECT * FROM merchant_trade order by trade_count desc limit 10) r order by r.update_time desc
+        SELECT * FROM (
+                          SELECT
+                              r.shop_id,SUM(r.trade_count) AS trade_count, MAX(update_time) AS update_time
+                          FROM
+                              (SELECT
+                                   *
+                               FROM
+                                   merchant_trade
+                               UNION
+                               SELECT * FROM merchant_trade_real
+                              ) r
+                          GROUP BY r.shop_id ORDER BY SUM(r.trade_count) DESC LIMIT 10) s ORDER BY s.update_time DESC
     </select>
 
     <select id="getCityTradeList" resultType="com.aura.model.CityTrade">
@@ -46,9 +57,47 @@
     </select>
 
     <select id="getProvinceTrade" resultType="com.aura.model.ProvinceTrade">
-        SELECT c.name as province_name,SUM(a.trade_count) AS trade_count FROM city_trade a JOIN t_city b ON a.city_name = b.name JOIN t_province c ON b.province_id = c.id GROUP BY c.name
-        UNION
-        SELECT e.name as province_name,SUM(d.trade_count) AS trade_count FROM city_trade d JOIN t_province e ON d.city_name = e.name GROUP BY e.name
+        SELECT
+            ss.province_name,SUM(trade_count) as trade_count FROM
+            (SELECT
+                 c.name AS province_name,
+                 SUM(a.trade_count) AS trade_count
+             FROM
+                 city_trade a
+                     JOIN t_city b
+                          ON a.city_name = b.name
+                     JOIN t_province c
+                          ON b.province_id = c.id
+             GROUP BY c.name
+             UNION
+             SELECT
+                 e.name AS province_name,
+                 SUM(d.trade_count) AS trade_count
+             FROM
+                 city_trade d
+                     JOIN t_province e
+                          ON d.city_name = e.name
+             GROUP BY e.name
+             UNION
+             SELECT
+                 cc.name AS province_name,
+                 SUM(aa.trade_count) AS trade_count
+             FROM
+                 city_trade_real aa
+                     JOIN t_city bb
+                          ON aa.city_name = bb.name
+                     JOIN t_province cc
+                          ON bb.province_id = cc.id
+             GROUP BY cc.name
+             UNION
+             SELECT
+                 ee.name AS province_name,
+                 SUM(dd.trade_count) AS trade_count
+             FROM
+                 city_trade_real dd
+                     JOIN t_province ee
+                          ON dd.city_name = ee.name
+             GROUP BY ee.name) ss GROUP BY ss.province_name;
     </select>
 
     <select id="getShopTradeView" resultType="com.aura.model.result.ShopTradeView">
