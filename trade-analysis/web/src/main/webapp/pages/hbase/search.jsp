@@ -232,7 +232,20 @@
                 </div>
             </div>--%>
             <div class="panel" style="padding: 20px 0px;" id="shop_recommend">
-
+                <div class="section-data" style="padding: 0px 5px;">
+                    <table data-row-style="rowStyle"
+                           data-show-export="true"
+                           data-pagination="true"
+                           data-thead-classes="thead-light"
+                           data-striped="true"
+                           data-sort-name="createTime"
+                           data-sort-order="desc"
+                           data-sort-stable="true"
+                           data-search="true"
+                           data-pagination-successively-size="1"
+                           id="show_recommend_table">
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -242,123 +255,123 @@
 </body>
 
 <script>
-    var height = $(window).height() / 2 - 15;
+   var height = $(window).height() / 5 - 15;
     $("#shop_view").height(height);
 
-    var shopView = echarts.init(document.getElementById('shop_view'));
+   /* var shopView = echarts.init(document.getElementById('shop_view'));
 
-    $("#shop_view_btn").click(function () {
-        var shopId = $("#shop_Id").val();
-        var startTime = $("#shop_date_input").val();
-        var endTime = $("#shop_date_input_end").val();
-        if(shopId == "") {
-            $("#shop_tips").attr("style","display:block");
-        }else{
-            $.get({url:"common/query_getShopViewByDay?shopId="+shopId+"&startTime="+startTime+"&endTime="+endTime}).done(function(data) {
-                var days = [];
-                var months = [];
-                var dayViews = [];
-                var monthViews = [];
-                data.day.map(function(item) {
-                    days.push(item.date);
-                    dayViews.push(item.viewTime);
-                });
-                data.mon.map(function(item) {
-                    months.push(item.date);
-                    monthViews.push(item.viewTime);
-                });
-                var types = ["交易次数","浏览次数"]
-                var datas = [dayViews,monthViews];
-                var option = {
-                    title: {
-                        text: "口碑交易统计",
-                        textStyle: {
-                            color: '#ffffff'
-                        }
-                    },
-                    tooltip : {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        textStyle: {
-                            color: '#ffffff'
-                        },
-                        x : 'right',
-                        y : 'top',
-                        data: types
-                    },
-                    grid: {
-                        top: 40,
-                        left: 30,
-                        right: 32,
-                        bottom: 5,
-                        containLabel: true
-                    },
-                    xAxis : [
-                        {
-                            type : 'category',
-                            boundaryGap : false,
-                            splitLine: {show: false},
-                            axisLine: {lineStyle: {color: '#ffffff'}},
-                            data: days
-                        }
-                    ],
-                    yAxis : [
-                        {
-                            type : 'value',
-                            splitLine: {show: false},
-                            axisLine: {lineStyle: {color: '#ffffff'}}
-                        }
-                    ],
-                    series : [
-                        {
-                            name:types[0],
-                            type:'line',
-                            symbol: 'emptyTriangle',
-                            symbolSize: 10,
-                            markPoint: {
-                                data: [
-                                    {type: 'max', name: '最大值'},
-                                    {type: 'min', name: '最小值'}
-                                ]
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#de4c4f'/*,
-                                lineStyle: {
-                                    width: 2,
-                                    type: 'dashed'
-                                }*/
-                                }
-                            },
-                            data:datas[0]
-                        },
-                        {
-                            name:types[1],
-                            type:'line',
-                            symbol: 'circle',
-                            symbolSize: 10,
-                            smooth: true,
-                            markPoint: {
-                                data: [
-                                    {type: 'max', name: '最大值'},
-                                    {type: 'min', name: '最小值'}
-                                ]
-                            },
-                            itemStyle: {
-                                normal: {
-                                    color: '#eea638'
-                                }
-                            },
-                            data:datas[1]
-                        }
-                    ]
-                };
-                shopView.setOption(option);
-            });
-        }
+   $("#shop_view_btn").click(function () {
+       var shopId = $("#shop_Id").val();
+       var startTime = $("#shop_date_input").val();
+       var endTime = $("#shop_date_input_end").val();
+       if(shopId == "") {
+           $("#shop_tips").attr("style","display:block");
+       }else{
+           $.get({url:"common/query_getShopViewByDay?shopId="+shopId+"&startTime="+startTime+"&endTime="+endTime}).done(function(data) {
+               var days = [];
+               var months = [];
+               var dayViews = [];
+               var monthViews = [];
+               data.day.map(function(item) {
+                   days.push(item.date);
+                   dayViews.push(item.viewTime);
+               });
+               data.mon.map(function(item) {
+                   months.push(item.date);
+                   monthViews.push(item.viewTime);
+               });
+               var types = ["交易次数","浏览次数"]
+               var datas = [dayViews,monthViews];
+               var option = {
+                   title: {
+                       text: "口碑交易统计",
+                       textStyle: {
+                           color: '#ffffff'
+                       }
+                   },
+                   tooltip : {
+                       trigger: 'axis'
+                   },
+                   legend: {
+                       textStyle: {
+                           color: '#ffffff'
+                       },
+                       x : 'right',
+                       y : 'top',
+                       data: types
+                   },
+                   grid: {
+                       top: 40,
+                       left: 30,
+                       right: 32,
+                       bottom: 5,
+                       containLabel: true
+                   },
+                   xAxis : [
+                       {
+                           type : 'category',
+                           boundaryGap : false,
+                           splitLine: {show: false},
+                           axisLine: {lineStyle: {color: '#ffffff'}},
+                           data: days
+                       }
+                   ],
+                   yAxis : [
+                       {
+                           type : 'value',
+                           splitLine: {show: false},
+                           axisLine: {lineStyle: {color: '#ffffff'}}
+                       }
+                   ],
+                   series : [
+                       {
+                           name:types[0],
+                           type:'line',
+                           symbol: 'emptyTriangle',
+                           symbolSize: 10,
+                           markPoint: {
+                               data: [
+                                   {type: 'max', name: '最大值'},
+                                   {type: 'min', name: '最小值'}
+                               ]
+                           },
+                           itemStyle: {
+                               normal: {
+                                   color: '#de4c4f'/!*,
+                               lineStyle: {
+                                   width: 2,
+                                   type: 'dashed'
+                               }*!/
+                               }
+                           },
+                           data:datas[0]
+                       },
+                       {
+                           name:types[1],
+                           type:'line',
+                           symbol: 'circle',
+                           symbolSize: 10,
+                           smooth: true,
+                           markPoint: {
+                               data: [
+                                   {type: 'max', name: '最大值'},
+                                   {type: 'min', name: '最小值'}
+                               ]
+                           },
+                           itemStyle: {
+                               normal: {
+                                   color: '#eea638'
+                               }
+                           },
+                           data:datas[1]
+                       }
+                   ]
+               };
+               shopView.setOption(option);
+           });
+       }
 
-    });
+   });*/
 
     $(function () {
         $('#date_input').datepicker({
@@ -526,7 +539,7 @@
             success: function(data) {
                 $("#viewuserid").text("");
                 $("#viewshopid").text("");
-                alert("Success!")
+                // alert("Success!")
             }
         });
     }
@@ -654,8 +667,59 @@
 
     $("#search_btn_retained").click(function () {
         getDataRetained();
-    })
+    });
 
+   <!--用户画像-推荐系统-->
+    $(function () {
+        // alert("推荐系统");
+        $("#show_recommend_table").bootstrapTable('destroy');
+        $("#show_recommend_table").bootstrapTable({
+            method: 'get',
+            url: "common/query_shopRecommendation",
+            // queryParams : null,
+            exportDataType: "all",
+            columns: [
+                {
+                    field: 'userId',
+                    title: "用户ID",
+                    align: 'center',
+                    valign: 'middle'
+                }, {
+                    field: 'recomShop.shopId',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "推荐商家ID"
+                }, {
+                    field: 'recomShop.cityName',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "所在城市"
+                },  {
+                    field: 'recomShop.perPay',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "人均消费"
+                }, {
+                    field: 'recomShop.score',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "评分"
+                },
+                /*{
+                    field: 'info.shopLevel',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "门店等级"
+                },*/
+                {
+                    field: 'recomShop.cate2Name',
+                    align: 'center',
+                    valign: 'middle',
+                    title: "二级分类"
+                }
+            ]
+        });
+    });
 
 </script>
 </html>
