@@ -44,7 +44,6 @@ public abstract class Ingest {
         }
     }
 
-
     public void ingest() {
         try {
             init();

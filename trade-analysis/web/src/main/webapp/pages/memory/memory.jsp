@@ -8,22 +8,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
-    
+
     <title>内存计算框架-Spark Core</title>
-    
+
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	
+
 	<script type="text/javascript" src="pages/jquery2/jquery-2.2.3.min.js"></script>
 	<script type="text/javascript" src="pages/echarts-3.2.1/echarts.min.js"></script>
 	<script type="text/javascript" src="pages/echarts-3.2.1/china.js"></script>
 	<script type="text/javascript" src="pages/echarts-3.2.1/world.js"></script>
 	<script type="text/javascript" src="pages/js/echarts3-basic.js?v=1.1"></script>
 	<script type="text/javascript" src="pages/js/memory.js?v=1.2"></script>
-	
+
 	<style type="text/css">
 	#main {
 		width: 100%;
@@ -39,7 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		-webkit-background-size:cover;
 	}
 	.chart {
-		
+
 	}
 	.marginRight {
 		margin-right: 1px;
@@ -47,14 +47,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</style>
 
   </head>
-  
+
   <body>
     <div id="chartFlow" style="width: 50%;float: left;margin-top:15px;" class="chart"></div>
     <div id="chartWorld" style="width: 49%;float: right;margin-top:15px;" class="chart marginRight"></div>
     <div id="chartSearch" style="width: 33%;float: left;margin-top:10px;" class="chart"></div>
     <div id="chartArea" style="width: 33%;float: left;margin-top:10px;" class="chart"></div>
     <div id="chartContent" style="width: 33%;float: right;margin-top:10px;" class="chart marginRight"></div>
-    
+
     <script type="text/javascript">
     var height = $(window).height() / 2 - 15;
     $("#chartFlow").height(height);
@@ -62,7 +62,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $("#chartSearch").height(height);
     $("#chartArea").height(height);
     $("#chartContent").height(height);
-    
+
     var chartFlow = echarts.init(document.getElementById('chartFlow'));
     var chartSearch = echarts.init(document.getElementById('chartSearch'));
     var chartArea = echarts.init(document.getElementById('chartArea'));
@@ -91,7 +91,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	var option = getOptionFlow("流量统计", types, days, datas);
 			chartFlow.setOption(option);
 		});
-		
+
 		/**
 		 * 搜索引擎
 		 */
@@ -102,7 +102,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	var option = getOptionSearch("搜索引擎", data);
 			chartSearch.setOption(option);
 		});
-		
+
 		/**
 		 * 地区统计
 		 */
@@ -117,7 +117,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	var option = getOptionArea("地区统计", data, max);
 			chartArea.setOption(option);
 		});
-		
+
 		/**
 		 * 国家统计
 		 */
@@ -135,7 +135,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	var option = getOptionWorld("国家统计", data, max);
 			chartWorld.setOption(option);
 		});
-		
+
 		/**
 		 * 新闻排行
 		 */

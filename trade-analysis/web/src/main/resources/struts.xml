@@ -10,7 +10,7 @@
 	<constant name="struts.devMode" value="false" />
 	<!-- spring 托管 -->
     <constant name="struts.objectFactory" value="spring" />
-    
+
     <package name="struts-webaura-default" extends="struts-default">
     	<interceptors>
     		<interceptor-stack name="defaultAllStack">
@@ -35,6 +35,11 @@
 		</action>
 		
 		<action name="learning_*" class="learningAction" method="{1}">
+		</action>
+
+		<action name="query_*" class="queryAction" method="{1}">
+		</action>
+		<action name="retained_*" class="retainedAnalysisAction" method="{1}">
 		</action>
     </package>
 </struts>

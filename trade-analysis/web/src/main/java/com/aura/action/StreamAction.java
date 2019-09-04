@@ -33,6 +33,19 @@ public class StreamAction extends BasicActionSupportImpl {
 	}
 
 	/**
+	 * 读取Kafka中user_pay主题数据
+	 * 1.统计每个商家实时交易次数，jiaoyi+<shop_id>
+	 * 2.统计每个城市发生的交易次数，jiaoyi+<city_name>
+	 */
+	public void getMerchantsTrade() {
+
+	}
+
+	public void getCityTrade() {
+
+	}
+
+	/**
 	 * Spark Streaming
 	 * 1. 地区分布
 	 * 2. 地区稿件

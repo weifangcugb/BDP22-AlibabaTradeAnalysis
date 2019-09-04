@@ -2,10 +2,14 @@ package com.aura.spark.streaming;
 
 import com.aura.database.JavaDBDao;
 import com.aura.database.C3P0Utils;
+import com.aura.hbase.HBaseBasic;
 import com.aura.service.ShopInfoService;
 import com.aura.util.AuraConfig;
 import com.typesafe.config.Config;
 import kafka.serializer.StringDecoder;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.SparkConf;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.streaming.Duration;
@@ -16,6 +20,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -24,7 +29,11 @@ import java.util.HashSet;
 import java.util.Map;
 
 //@Service("streamingAnalysis")
-public class JavaTradeStreamingAnalysis {
+public class JavaTradeStreamingAnalysis extends HBaseBasic {
+
+    public static final String TABLE_INFO = "info";
+    private static final String COLUMN_FAMILY1 = "cf1"; //商家交易
+    private static final String COLUMN_FAMILY2 = "cf2"; //城市交易
 
     private Config config;
     private JavaStreamingContext ssc;
@@ -33,6 +42,7 @@ public class JavaTradeStreamingAnalysis {
     private ShopInfoService shopInfoService;
 
     public JavaTradeStreamingAnalysis() {
+        System.out.println("-------JavaTradeStreamingAnalysis-------");
         config = AuraConfig.getRoot();
         SparkConf conf = new SparkConf();
         conf.setMaster("local[2]").setAppName("Trade Streaming Analysis");
@@ -51,22 +61,21 @@ public class JavaTradeStreamingAnalysis {
     }
 
     //get (shop,city) table from MySQL
-    private Map<String,String> getShopCityMap() {
-        Map<String,String> shopCityMap = shopInfoService.getShopInfoList();
-        if(shopCityMap.isEmpty()) return null;
+    private Map<String, String> getShopCityMap() {
+        Map<String, String> shopCityMap = shopInfoService.getShopInfoList();
+        if (shopCityMap.isEmpty()) return null;
         return shopCityMap;
     }
-
 
     public void runAnalysis() {
         ssc.sparkContext().setLogLevel("WARN");
         String kafkaTopic = AuraConfig.getStreamingConfig().getString("topic");
 
         //broadcast Map<shopId,cityName>
-        Broadcast<Map<String,String>> shopCityBroadCast = ssc.sparkContext().broadcast(getShopCityMap());
+        Broadcast<Map<String, String>> shopCityBroadCast = ssc.sparkContext().broadcast(getShopCityMap());
 
         //KafkaDirectStream
-        JavaPairInputDStream<String,String> input = KafkaUtils.createDirectStream(
+        JavaPairInputDStream<String, String> input = KafkaUtils.createDirectStream(
                 ssc,
                 String.class,
                 String.class,
@@ -76,23 +85,29 @@ public class JavaTradeStreamingAnalysis {
                 new HashSet<>(Arrays.asList(kafkaTopic))
         );
         input.foreachRDD(rdd -> {
-            //update MySQL, use c3po thread pool
+            //1.update MySQL, use c3po thread pool。遇到kafka重复发送消息时，统计结果就会不准确。
+            //2.update hbase table。定时统计结果表数据，同时设置延迟窗口，处理late date。
             rdd.foreachPartition(rows -> {
-                Connection conn = C3P0Utils.getConnection();
                 rows.forEachRemaining(row -> {
-                    String shopId = row._2().split(",",-1)[0]; //shopId,payTime
+                    String userId = row._1();
+                    String shopId = row._2().split(",", -1)[0];
+                    String payTime = row._2().split(",", -1)[1];
+                    Table table = null;
                     try {
-                        System.out.println(row._1() + ":" + row._2());
+                        createTable(TABLE_INFO,COLUMN_FAMILY1,COLUMN_FAMILY2); //表不存在时创建
+                        table = getTable(TABLE_INFO);
                         //每个商家实时交易次数
-                        JavaDBDao.saveMerchantTrade(conn, Integer.valueOf(shopId), 1);
-
+                        Put merchants = new Put(Bytes.toBytes(shopId));
+                        merchants.addColumn(Bytes.toBytes(COLUMN_FAMILY1), Bytes.toBytes(shopId+":"+payTime), Bytes.toBytes(userId));
+                        table.put(merchants);
                         //每个城市发生的交易次数
                         String cityName = shopCityBroadCast.getValue().getOrDefault(shopId, null);
-                        JavaDBDao.saveCityTrade(conn, cityName.trim(), 1);
-                    } catch (SQLException e) {
+                        Put cities = new Put(Bytes.toBytes(cityName));
+                        cities.addColumn(Bytes.toBytes(COLUMN_FAMILY2), Bytes.toBytes(shopId+":"+payTime), Bytes.toBytes(userId));
+                        table.put(cities);
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 });
             });
         });

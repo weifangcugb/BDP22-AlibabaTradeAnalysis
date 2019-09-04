@@ -2,6 +2,7 @@ package com.aura.spark.sql;
 
 import com.aura.model.ShopInfo;
 import com.aura.model.UserPay;
+import com.aura.model.UserView;
 import com.aura.util.StringUtil;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -23,6 +24,7 @@ abstract  public class BaseTradeAnalysis {
         conf.setIfMissing("spark.app.name", getClass().getSimpleName());
         conf.setMaster("local[2]"); //本地测试使用
         spark = SparkSession.builder().config(conf).getOrCreate();
+        spark.sparkContext().setLogLevel("warn");
         jsc = new JavaSparkContext(spark.sparkContext());
     }
 
@@ -70,11 +72,31 @@ abstract  public class BaseTradeAnalysis {
         return userPayJavaRDD;
     }
 
+    protected JavaRDD<UserView> toUserViewRDD(String path) {
+        JavaRDD<String> rdd = jsc.textFile(path);
+        JavaRDD<UserView> userViewJavaRDD = rdd.map(line -> {
+            String[] parts = line.split(",",-1);
+            UserView bean = new UserView();
+            bean.setUser_id(parts[0]);
+            bean.setShop_id((parts[1]));
+            bean.setTime_stamp(parts[2]);
+            return bean;
+        });
+        return userViewJavaRDD;
+    }
+
     protected Dataset<Row> toUserPayDF(JavaRDD<UserPay> userPayJavaRDD) {
         Dataset<Row> userPayDF = spark.createDataFrame(userPayJavaRDD,UserPay.class);
         System.out.println("UserPay Dataframe Schema");
         userPayDF.printSchema();
         return userPayDF;
+    }
+
+    protected Dataset<Row> toUserViewDF(JavaRDD<UserView> userPayJavaRDD) {
+        Dataset<Row> userViewDF = spark.createDataFrame(userPayJavaRDD,UserView.class);
+        System.out.println("UserView Dataframe Schema");
+        userViewDF.printSchema();
+        return userViewDF;
     }
 
 }

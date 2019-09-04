@@ -48,7 +48,8 @@ public class JavaKafkaProducer
                 String[] attr = line.split(",",-1);
                 //topic为user_pay, user_id为key，shop_id+”,”+time_stamp为value
                 producer.send(new ProducerRecord<String, String>("user_pay", attr[0], attr[1]+","+attr[2]));
-                Thread.sleep(1000);
+                System.out.println(line);
+                Thread.sleep(1000); //单位：毫秒
             }
         } catch (IOException e) {
             e.printStackTrace();
